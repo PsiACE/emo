@@ -1,0 +1,5 @@
+# Meson Build
+build/
+
+# Editor Config
+.vscode/
