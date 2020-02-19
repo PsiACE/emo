@@ -1,16 +1,13 @@
 shared_sources = [
-
-]
-
-treewalk_sources = [
-
+    'main.c'
 ]
 
 utils_sources = [
-
+    'utils/args.c',
+    'utils/messages.c',
 ]
 
-emo_sources = files(shared_sources, treewalk_sources, utils_sources)
+emo_sources = files(shared_sources, utils_sources)
 
 emo_deps = []
 
