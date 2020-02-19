@@ -1,6 +1,16 @@
-emo_sources = [
+shared_sources = [
 
 ]
+
+treewalk_sources = [
+
+]
+
+utils_sources = [
+
+]
+
+emo_sources = files(shared_sources, treewalk_sources, utils_sources)
 
 emo_deps = []
 
