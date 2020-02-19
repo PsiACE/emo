@@ -8,13 +8,11 @@
 #define __PROGRAM_COPYRIGHT__ "2020"
 #define __PROGRAM_AUTHOR__ "Chojan Shang <psiace@outlook.com>"
 
-
-void help ();
-void usage ();
-void version ();
-void overview ();
-void options ();
-void copyright ();
-
+void help();
+void usage();
+void version();
+void overview();
+void options();
+void copyright();
 
 #endif

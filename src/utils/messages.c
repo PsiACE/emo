@@ -18,7 +18,7 @@ void overview()
 
 void copyright()
 {
-	printf("Copyright (C) %s %s\n", __PROGRAM_COPYRIGHT__,__PROGRAM_AUTHOR__);
+	printf("Copyright (C) %s %s\n", __PROGRAM_COPYRIGHT__, __PROGRAM_AUTHOR__);
 }
 
 void usage()

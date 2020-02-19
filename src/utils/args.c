@@ -3,8 +3,8 @@
 #include <string.h>
 
 #include "emo/utils/args.h"
-#include "emo/utils/styles.h"
 #include "emo/utils/messages.h"
+#include "emo/utils/styles.h"
 
 static void set_default_options(Options *options)
 {
