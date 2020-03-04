@@ -4,7 +4,7 @@
 
 _**WIP**_
 
-The `emo` programming language is dedicated to exploring simple yet expressive methods, sophisticated and easy to use.
+The `"emo"` programming language is dedicated to exploring simple yet expressive methods, powerful and easy to use.
 
 ## Usage
 
@@ -27,6 +27,10 @@ Chojan Shang - [@PsiACE](https://github.com/psiace) - <psiace@outlook.com>
 
 Project Link: [https://github.com/psiace/emo](https://github.com/psiace/emo)
 
+## License
+
+This project is licensed under the terms of the [MIT license](./LICENSE).
+
 ## Credits
 
-- [Crafting Interpreters](http://www.craftinginterpreters.com): A handbook for making programming languages.
+- [Crafting Interpreters](http://www.craftinginterpreters.com): A handbook for making programming languages. A lot of code for `"emo"` comes directly or indirectly from here.
