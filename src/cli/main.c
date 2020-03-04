@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "emo/utils/args.h"
-#include "emo/utils/styles.h"
+#include "emo/cli/args.h"
+#include "emo/cli/styles.h"
 
 int main(int argc, char *argv[])
 {

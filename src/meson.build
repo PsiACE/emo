@@ -1,13 +1,10 @@
-shared_sources = [
-    'main.c'
+cli_sources = [
+    'cli/args.c',
+    'cli/messages.c',
+    'cli/main.c'
 ]
 
-utils_sources = [
-    'utils/args.c',
-    'utils/messages.c',
-]
-
-emo_sources = files(shared_sources, utils_sources)
+emo_sources = files(cli_sources)
 
 emo_deps = []
 

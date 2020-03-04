@@ -1,15 +1,15 @@
 incdir = include_directories('.')
 
-shared_headers = [
-    'emo/emo.h'
+include_headers = [
+    'emo/include/emo.h'
 ]
 
-utils_headers = [
-    'emo/utils/args.h',
-    'emo/utils/messages.h',
-    'emo/utils/styles.h',
+cli_headers = [
+    'emo/cli/args.h',
+    'emo/cli/messages.h',
+    'emo/cli/styles.h',
 ]
 
-emo_headers = files(shared_headers, utils_headers)
+emo_headers = files(include_headers, cli_headers)
 
-install_headers(shared_headers, subdir: 'emo')
+install_headers(include_headers, subdir: 'emo')
