@@ -1,10 +1,17 @@
 cli_sources = [
     'cli/args.c',
+    'cli/main.c',
     'cli/messages.c',
-    'cli/main.c'
 ]
 
-emo_sources = files(cli_sources)
+core_sources = [
+    'core/chunk.c',
+    'core/debug.c',
+    'core/memory.c',
+    'core/value.c'
+]
+
+emo_sources = files(cli_sources, core_sources)
 
 emo_deps = []
 
