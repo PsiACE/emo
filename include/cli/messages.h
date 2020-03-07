@@ -1,8 +1,7 @@
 #ifndef emo_utils_messages_h
 #define emo_utils_messages_h
 
-#include "emo-config.h"
-#include "emo/include/emo.h"
+#include "emo.h"
 
 #define __PROGRAM_NAME__ PROGRAM_NAME
 #define __PROGRAM_VERSION__ PACKAGE_VERSION
