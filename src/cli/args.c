@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "emo/cli/args.h"
-#include "emo/cli/messages.h"
-#include "emo/cli/styles.h"
+#include "cli/args.h"
+#include "cli/messages.h"
+#include "cli/styles.h"
 
 static void set_default_options(Options *options)
 {
