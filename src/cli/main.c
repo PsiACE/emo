@@ -15,9 +15,15 @@ int main(int argc, char *argv[])
 
 	Chunk chunk;
 	init_chunk(&chunk);
+
 	int constant = add_constant(&chunk, 1.2);
+
 	write_chunk(&chunk, OP_CONSTANT, 123);
 	write_chunk(&chunk, constant, 123);
+
+	for (int i = 0; i < 500; i++) {
+		write_constant(&chunk, i, 123);
+	}
 
 	write_chunk(&chunk, OP_RETURN, 123);
 	write_chunk(&chunk, OP_RETURN, 125);
