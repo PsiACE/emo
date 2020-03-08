@@ -1,21 +1,66 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "core/chunk.h"
 #include "core/memory.h"
+
+void init_line_record_array(LineRecordArray *array)
+{
+	array->linemarks = NULL;
+	array->capacity = 0;
+	array->count = 0;
+}
+
+void write_line_record_array(LineRecordArray *array, int line)
+{
+	if (array->capacity < array->count + 1) {
+		int oldCapacity = array->capacity;
+		array->capacity = GROW_CAPACITY(oldCapacity);
+		array->linemarks = GROW_ARRAY(array->linemarks, LineRecord, oldCapacity, array->capacity);
+	}
+
+	encode_line_record_array(array, line);
+}
+
+void encode_line_record_array(LineRecordArray *array, int line)
+{
+	if (array->count == 0) {
+		array->linemarks[0].linemark = line;
+		array->linemarks[0].offset = 0;
+		array->count++;
+	}
+
+	if (line == array->linemarks[array->count - 1].linemark) {
+		array->linemarks[array->count - 1].offset++;
+	} else {
+		int index = array->count;
+		array->linemarks[index].linemark = line;
+		array->linemarks[index].offset = 1;
+		array->count++;
+	}
+}
+
+void free_line_record_array(LineRecordArray *array)
+{
+	FREE_ARRAY(LineRecord, array->linemarks, array->capacity);
+	init_line_record_array(array);
+}
 
 void init_chunk(Chunk *chunk)
 {
 	chunk->count = 0;
 	chunk->capacity = 0;
 	chunk->code = NULL;
-	chunk->lines = NULL;
+	// chunk->lines = NULL;
+	init_line_record_array(&chunk->lines);
 	init_value_array(&chunk->constants);
 }
 
 void free_chunk(Chunk *chunk)
 {
 	FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
-	FREE_ARRAY(int, chunk->lines, chunk->capacity);
+	// FREE_ARRAY(int, chunk->lines, chunk->capacity);
+	free_line_record_array(&chunk->lines);
 	free_value_array(&chunk->constants);
 	init_chunk(chunk);
 }
@@ -26,11 +71,13 @@ void write_chunk(Chunk *chunk, uint8_t byte, int line)
 		int oldCapacity = chunk->capacity;
 		chunk->capacity = GROW_CAPACITY(oldCapacity);
 		chunk->code = GROW_ARRAY(chunk->code, uint8_t, oldCapacity, chunk->capacity);
-		chunk->lines = GROW_ARRAY(chunk->lines, int, oldCapacity, chunk->capacity);
+		// chunk->lines = GROW_ARRAY(chunk->lines, int, oldCapacity, chunk->capacity);
 	}
 
+	write_line_record_array(&chunk->lines, line);
+
 	chunk->code[chunk->count] = byte;
-	chunk->lines[chunk->count] = line;
+	// chunk->lines[chunk->count] = line;
 	chunk->count++;
 }
 

@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "core/chunk.h"
 #include "core/debug.h"
 #include "core/value.h"
 
@@ -10,6 +11,21 @@ void disassemble_chunk(Chunk *chunk, const char *name)
 	for (int offset = 0; offset < chunk->count;) {
 		offset = disassemble_instruction(chunk, offset);
 	}
+}
+
+static int get_line(LineRecordArray *array, int offset)
+{
+	int offsetLeft = offset;
+
+	for (int index = 0; index < array->count; index++) {
+		if (array->linemarks[index].offset > offsetLeft) {
+			return array->linemarks[index].linemark;
+		}
+		offsetLeft -= array->linemarks[index].offset;
+	}
+
+	printf("Error : get_line() returns -1 \n");
+	return -1;
 }
 
 static int constant_instruction(const char *name, Chunk *chunk, int offset)
@@ -30,10 +46,13 @@ static int simple_instruction(const char *name, int offset)
 int disassemble_instruction(Chunk *chunk, int offset)
 {
 	printf("%04d ", offset);
-	if (offset > 0 && chunk->lines[offset] == chunk->lines[offset - 1]) {
+
+	int line = get_line(&chunk->lines, offset);
+
+	if (offset > 0 && line == get_line(&chunk->lines, offset - 1)) {
 		printf("   | ");
 	} else {
-		printf("%4d ", chunk->lines[offset]);
+		printf("%4d ", line);
 	}
 
 	uint8_t instruction = chunk->code[offset];
