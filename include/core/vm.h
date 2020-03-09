@@ -6,8 +6,6 @@
 #include "core/chunk.h"
 #include "core/value.h"
 
-#define STACK_MAX 512
-
 typedef struct {
 	Chunk *chunk;
 	uint8_t *ip;
