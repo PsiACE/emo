@@ -8,7 +8,8 @@ core_sources = [
     'core/chunk.c',
     'core/debug.c',
     'core/memory.c',
-    'core/value.c'
+    'core/value.c',
+    'core/vm.c',
 ]
 
 emo_sources = files(cli_sources, core_sources)

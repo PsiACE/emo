@@ -12,6 +12,7 @@ core_headers = [
     'core/debug.h',
     'core/memory.h',
     'core/value.h',
+    'core/vm.h',
 ]
 
 include_headers = [
