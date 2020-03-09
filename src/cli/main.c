@@ -7,11 +7,14 @@
 #include "core/chunk.h"
 #include "core/common.h"
 #include "core/debug.h"
+#include "core/vm.h"
 
 int main(int argc, char *argv[])
 {
 	struct options options;
 	options_parser(argc, argv, &options);
+
+	init_vm();
 
 	Chunk chunk;
 	init_chunk(&chunk);
@@ -25,9 +28,18 @@ int main(int argc, char *argv[])
 		write_constant(&chunk, i, 123);
 	}
 
+	write_chunk(&chunk, OP_ADD, 123); // 498 + 499 = 997
+
+	write_chunk(&chunk, OP_DIVIDE, 123); // 497 / 997 = 0.498495
+
+	write_chunk(&chunk, OP_NEGATE, 123);
 	write_chunk(&chunk, OP_RETURN, 123);
-	write_chunk(&chunk, OP_RETURN, 125);
+
 	disassemble_chunk(&chunk, "test chunk");
+
+	interpret(&chunk);
+	free_vm();
+
 	free_chunk(&chunk);
 
 #ifdef DEBUG
