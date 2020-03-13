@@ -6,8 +6,10 @@ cli_sources = [
 
 core_sources = [
     'core/chunk.c',
+    'core/compiler.c',
     'core/debug.c',
     'core/memory.c',
+    'core/scanner.c',
     'core/value.c',
     'core/vm.c',
 ]

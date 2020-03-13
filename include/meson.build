@@ -8,9 +8,11 @@ cli_headers = [
 
 core_headers = [
     'core/chunk.h',
+    'core/compiler.h',
     'core/common.h',
     'core/debug.h',
     'core/memory.h',
+    'core/scanner.h',
     'core/value.h',
     'core/vm.h',
 ]
