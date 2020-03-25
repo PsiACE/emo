@@ -1,6 +1,8 @@
 #ifndef emo_compiler_h
 #define emo_compiler_h
 
-void compile(const char *source);
+#include "core/vm.h"
+
+bool compile(const char* source, Chunk* chunk);
 
 #endif
