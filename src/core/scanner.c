@@ -238,7 +238,11 @@ Token scan_token()
 	case '*':
 		return make_token(TOKEN_STAR);
 	case '!':
-		return make_token(match('=') ? TOKEN_BANG_EQUAL : TOKEN_NOT);
+		if (match('=')) {
+			return make_token(TOKEN_BANG_EQUAL);
+		}
+		break;
+		// return make_token(match('=') ? TOKEN_BANG_EQUAL : TOKEN_NOT);
 	case '=':
 		return make_token(match('=') ? TOKEN_EQUAL_EQUAL : TOKEN_EQUAL);
 	case '<':
