@@ -6,7 +6,7 @@
 #include "core/scanner.h"
 
 #ifdef DEBUG_PRINT_CODE
-#include "debug.h"
+#include "core/debug.h"
 #endif
 
 typedef struct {
