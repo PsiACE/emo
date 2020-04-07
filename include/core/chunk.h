@@ -1,5 +1,5 @@
-#ifndef emo_chunk_h
-#define emo_chunk_h
+#ifndef emo_core_chunk_h
+#define emo_core_chunk_h
 
 #include "core/common.h"
 #include "core/value.h"

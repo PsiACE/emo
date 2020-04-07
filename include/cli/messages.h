@@ -1,5 +1,5 @@
-#ifndef emo_utils_messages_h
-#define emo_utils_messages_h
+#ifndef emo_cli_messages_h
+#define emo_cli_messages_h
 
 #include "emo.h"
 

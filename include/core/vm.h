@@ -1,5 +1,5 @@
-#ifndef emo_vm_h
-#define emo_vm_h
+#ifndef emo_core_vm_h
+#define emo_core_vm_h
 
 #include <stdint.h>
 

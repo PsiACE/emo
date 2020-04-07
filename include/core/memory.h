@@ -1,5 +1,5 @@
-#ifndef emo_memory_h
-#define emo_memory_h
+#ifndef emo_core_memory_h
+#define emo_core_memory_h
 
 #define GROW_CAPACITY(capacity) ((capacity) < 8 ? 8 : (capacity)*2)
 

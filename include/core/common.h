@@ -1,5 +1,5 @@
-#ifndef emo_common_h
-#define emo_common_h
+#ifndef emo_core_common_h
+#define emo_core_common_h
 
 #include <stdbool.h>
 #include <stddef.h>

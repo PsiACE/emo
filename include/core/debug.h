@@ -1,5 +1,5 @@
-#ifndef emo_debug_h
-#define emo_debug_h
+#ifndef emo_core_debug_h
+#define emo_core_debug_h
 
 #include "core/chunk.h"
 

@@ -1,5 +1,5 @@
-#ifndef emo_utils_styles_h
-#define emo_utils_styles_h
+#ifndef emo_cli_styles_h
+#define emo_cli_styles_h
 
 #define NO_COLOR "\x1b[0m"
 #define BOLD "\x1b[1m"

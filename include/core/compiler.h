@@ -1,5 +1,5 @@
-#ifndef emo_compiler_h
-#define emo_compiler_h
+#ifndef emo_core_compiler_h
+#define emo_core_compiler_h
 
 #include "core/vm.h"
 

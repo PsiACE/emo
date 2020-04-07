@@ -1,5 +1,5 @@
-#ifndef emo_utils_args_h
-#define emo_utils_args_h
+#ifndef emo_cli_args_h
+#define emo_cli_args_h
 
 #include <getopt.h>
 #include <stdbool.h>

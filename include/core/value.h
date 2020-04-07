@@ -1,5 +1,5 @@
-#ifndef emo_value_h
-#define emo_value_h
+#ifndef emo_core_value_h
+#define emo_core_value_h
 
 #include "core/common.h"
 

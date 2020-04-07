@@ -1,5 +1,5 @@
-#ifndef emo_scanner_h
-#define emo_scanner_h
+#ifndef emo_core_scanner_h
+#define emo_core_scanner_h
 
 typedef enum {
 	// Single-character tokens.
