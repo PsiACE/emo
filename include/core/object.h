@@ -20,11 +20,14 @@ struct sObj {
 
 struct sObjString {
 	Obj obj;
+	bool ownsChars; // <--
 	int length;
-	char *chars;
+	// char *chars;
+	char chars[];
 };
 
-ObjString *take_string(char *chars, int length);
+// ObjString *take_string(char *chars, int length);
+ObjString *make_string(int length);
 ObjString *copy_string(const char *chars, int length);
 void print_object(Value value);
 

@@ -17,27 +17,21 @@ static Obj *allocate_object(size_t size, ObjType type)
 	return object;
 }
 
-static ObjString *allocate_string(char *chars, int length)
+ObjString *make_string(int length)
 {
-	ObjString *string = ALLOCATE_OBJ(ObjString, OBJ_STRING);
+	ObjString *string = (ObjString *)allocate_object(sizeof(ObjString) + length + 1, OBJ_STRING);
 	string->length = length;
-	string->chars = chars;
-
 	return string;
-}
-
-ObjString *take_string(char *chars, int length)
-{
-	return allocate_string(chars, length);
 }
 
 ObjString *copy_string(const char *chars, int length)
 {
-	char *heapChars = ALLOCATE(char, length + 1);
-	memcpy(heapChars, chars, length);
-	heapChars[length] = '\0';
+	ObjString *string = make_string(length);
 
-	return allocate_string(heapChars, length);
+	memcpy(string->chars, chars, length);
+	string->chars[length] = '\0';
+
+	return string;
 }
 
 void print_object(Value value)
@@ -48,3 +42,26 @@ void print_object(Value value)
 		break;
 	}
 }
+
+// static ObjString *allocate_string(char *chars, int length)
+// {
+// 	ObjString *string = ALLOCATE_OBJ(ObjString, OBJ_STRING);
+// 	string->length = length;
+// 	string->chars = chars;
+
+// 	return string;
+// }
+
+// ObjString *take_string(char *chars, int length)
+// {
+// 	return allocate_string(chars, length);
+// }
+
+// ObjString *copy_string(const char *chars, int length)
+// {
+// 	char *heapChars = ALLOCATE(char, length + 1);
+// 	memcpy(heapChars, chars, length);
+// 	heapChars[length] = '\0';
+
+// 	return allocate_string(heapChars, length);
+// }
