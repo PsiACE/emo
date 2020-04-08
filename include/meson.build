@@ -12,6 +12,7 @@ core_headers = [
     'core/common.h',
     'core/debug.h',
     'core/memory.h',
+    'core/object.h',
     'core/scanner.h',
     'core/value.h',
     'core/vm.h',

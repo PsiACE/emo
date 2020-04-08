@@ -9,6 +9,7 @@ core_sources = [
     'core/compiler.c',
     'core/debug.c',
     'core/memory.c',
+    'core/object.c',
     'core/scanner.c',
     'core/value.c',
     'core/vm.c',
