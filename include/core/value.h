@@ -3,10 +3,15 @@
 
 #include "core/common.h"
 
-// I don't want a `nil` value.
+typedef struct sObj Obj;
+typedef struct sObjString ObjString;
+
+// TODO:
+// I don't want a `nil` value. But may need a type for nothing.
 typedef enum {
 	VAL_BOOL,	// default `false`
 	VAL_NUMBER, // default `0`
+	VAL_OBJ,
 } ValueType;
 
 typedef struct {
@@ -14,17 +19,21 @@ typedef struct {
 	union {
 		bool boolean;
 		double number;
+		Obj *obj;
 	} as;
 } Value;
 
 #define IS_BOOL(value) ((value).type == VAL_BOOL)
 #define IS_NUMBER(value) ((value).type == VAL_NUMBER)
+#define IS_OBJ(value) ((value).type == VAL_OBJ)
 
 #define AS_BOOL(value) ((value).as.boolean)
 #define AS_NUMBER(value) ((value).as.number)
+#define AS_OBJ(value) ((value).as.obj)
 
 #define BOOL_VAL(value) ((Value){VAL_BOOL, {.boolean = value}})
 #define NUMBER_VAL(value) ((Value){VAL_NUMBER, {.number = value}})
+#define OBJ_VAL(object) ((Value){VAL_OBJ, {.obj = (Obj *)object}})
 
 typedef struct {
 	int count;
