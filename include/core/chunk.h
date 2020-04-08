@@ -12,7 +12,6 @@ typedef enum {
 	OP_GREATER,
 	OP_LESS,
 	OP_ADD,
-	OP_SUBTRACT,
 	OP_MULTIPLY,
 	OP_DIVIDE,
 	OP_NOT,
