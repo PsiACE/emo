@@ -116,20 +116,25 @@ static void emit_return()
 	emit_byte(OP_RETURN);
 }
 
-static uint8_t make_constant(Value value)
-{
-	int constant = add_constant(current_chunk(), value);
-	if (constant > UINT8_MAX) {
-		error("Too many constants in one chunk.");
-		return 0;
-	}
+// static uint8_t make_constant(Value value)
+// {
+// 	int constant = add_constant(current_chunk(), value);
+// 	if (constant > UINT8_MAX) {
+// 		error("Too many constants in one chunk.");
+// 		return 0;
+// 	}
 
-	return (uint8_t)constant;
-}
+// 	return (uint8_t)constant;
+// }
+
+// static void emit_constant(Value value)
+// {
+// 	emit_bytes(OP_CONSTANT, make_constant(value));
+// }
 
 static void emit_constant(Value value)
 {
-	emit_bytes(OP_CONSTANT, make_constant(value));
+	write_constant(current_chunk(), value, parser.previous.line);
 }
 
 static void end_compiler()
