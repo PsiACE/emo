@@ -11,6 +11,7 @@ core_sources = [
     'core/memory.c',
     'core/object.c',
     'core/scanner.c',
+    'core/table.c',
     'core/value.c',
     'core/vm.c',
 ]

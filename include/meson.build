@@ -14,6 +14,7 @@ core_headers = [
     'core/memory.h',
     'core/object.h',
     'core/scanner.h',
+    'core/table.h',
     'core/value.h',
     'core/vm.h',
 ]
