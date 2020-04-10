@@ -39,10 +39,12 @@ void init_vm()
 	vm.stackCapacity = 0;
 	reset_stack();
 	vm.objects = NULL;
+	init_table(&vm.strings);
 }
 
 void free_vm()
 {
+	free_table(&vm.strings);
 	free_objects();
 }
 
@@ -82,10 +84,11 @@ static void concatenate()
 	ObjString *a = AS_STRING(pop());
 
 	int length = a->length + b->length;
-	ObjString *result = make_string(length);
-	memcpy(result->chars, a->chars, a->length);
-	memcpy(result->chars + a->length, b->chars, b->length);
-	result->chars[length] = '\0';
+	ObjString *string = make_string(length);
+	memcpy(string->chars, a->chars, a->length);
+	memcpy(string->chars + a->length, b->chars, b->length);
+	string->chars[length] = '\0';
+	ObjString *result = take_string(string);
 	// char *chars = ALLOCATE(char, length + 1);
 	// memcpy(chars, a->chars, a->length);
 	// memcpy(chars + a->length, b->chars, b->length);

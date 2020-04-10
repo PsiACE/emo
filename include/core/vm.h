@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "core/chunk.h"
+#include "core/table.h"
 #include "core/value.h"
 
 typedef struct {
@@ -12,6 +13,7 @@ typedef struct {
 	Value *stack;
 	int stackCount;
 	int stackCapacity;
+	Table strings;
 	Obj *objects;
 } VM;
 

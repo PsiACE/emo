@@ -8,9 +8,11 @@ typedef struct sObjString ObjString;
 
 // TODO:
 // I don't want a `nil` value. But may need a type for nothing.
+// So, internal use only a meta type.
 typedef enum {
 	VAL_BOOL,	// default `false`
 	VAL_NUMBER, // default `0`
+	VAL_META,	// always `()`.
 	VAL_OBJ,
 } ValueType;
 
@@ -19,20 +21,24 @@ typedef struct {
 	union {
 		bool boolean;
 		double number;
+		char *meta;
 		Obj *obj;
 	} as;
 } Value;
 
 #define IS_BOOL(value) ((value).type == VAL_BOOL)
 #define IS_NUMBER(value) ((value).type == VAL_NUMBER)
+#define IS_META(value) ((value).type == VAL_META)
 #define IS_OBJ(value) ((value).type == VAL_OBJ)
 
 #define AS_BOOL(value) ((value).as.boolean)
 #define AS_NUMBER(value) ((value).as.number)
+#define AS_META(value) ((value).as.meta)
 #define AS_OBJ(value) ((value).as.obj)
 
 #define BOOL_VAL(value) ((Value){VAL_BOOL, {.boolean = value}})
 #define NUMBER_VAL(value) ((Value){VAL_NUMBER, {.number = value}})
+#define META_VAL ((Value){VAL_META, {.meta = "()"}})
 #define OBJ_VAL(object) ((Value){VAL_OBJ, {.obj = (Obj *)object}})
 
 typedef struct {

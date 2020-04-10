@@ -22,6 +22,7 @@ struct sObjString {
 	Obj obj;
 	bool ownsChars; // <--
 	int length;
+	uint32_t hash;
 	// char *chars;
 	char chars[];
 };
@@ -29,6 +30,9 @@ struct sObjString {
 // ObjString *take_string(char *chars, int length);
 ObjString *make_string(int length);
 ObjString *copy_string(const char *chars, int length);
+ObjString *take_string(ObjString *string);
+ObjString *hash_string(ObjString *string);
+
 void print_object(Value value);
 
 static inline bool is_obj_type(Value value, ObjType type)

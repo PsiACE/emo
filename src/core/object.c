@@ -17,6 +17,18 @@ static Obj *allocate_object(size_t size, ObjType type)
 	return object;
 }
 
+static uint32_t hash_chars(const char *key, int length)
+{
+	uint32_t hash = 2166136261u;
+
+	for (int i = 0; i < length; i++) {
+		hash ^= key[i];
+		hash *= 16777619;
+	}
+
+	return hash;
+}
+
 ObjString *make_string(int length)
 {
 	ObjString *string = (ObjString *)allocate_object(sizeof(ObjString) + length + 1, OBJ_STRING);
@@ -30,6 +42,34 @@ ObjString *copy_string(const char *chars, int length)
 
 	memcpy(string->chars, chars, length);
 	string->chars[length] = '\0';
+
+	ObjString *hashString = hash_string(string);
+
+	return hashString;
+}
+
+ObjString *take_string(ObjString *string)
+{
+	uint32_t hash = hash_chars(string->chars, string->length);
+	ObjString *interned = table_find_string(&vm.strings, string->chars, string->length, hash);
+	if (interned != NULL) {
+		reallocate(string, sizeof(ObjString) + string->length + 1, 0);
+		return interned;
+	}
+	return string;
+}
+
+ObjString *hash_string(ObjString *string)
+{
+	uint32_t hash = hash_chars(string->chars, string->length);
+	ObjString *interned = table_find_string(&vm.strings, string->chars, string->length, hash);
+
+	if (interned != NULL)
+		return interned;
+
+	string->hash = hash;
+
+	table_set(&vm.strings, string, META_VAL);
 
 	return string;
 }
