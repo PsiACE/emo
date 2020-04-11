@@ -33,7 +33,6 @@ typedef struct {
 
 #define AS_BOOL(value) ((value).as.boolean)
 #define AS_NUMBER(value) ((value).as.number)
-#define AS_META(value) ((value).as.meta)
 #define AS_OBJ(value) ((value).as.obj)
 
 #define BOOL_VAL(value) ((Value){VAL_BOOL, {.boolean = value}})
@@ -46,6 +45,8 @@ typedef struct {
 	int capacity;
 	Value *values;
 } ValueArray;
+
+uint32_t hash_value(Value value);
 
 bool values_equal(Value a, Value b);
 void init_value_array(ValueArray *array);

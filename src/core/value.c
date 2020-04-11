@@ -5,6 +5,33 @@
 #include "core/object.h"
 #include "core/value.h"
 
+static uint32_t hash_double(double value)
+{
+	union BitCast {
+		double value;
+		uint32_t ints[2];
+	};
+
+	union BitCast cast;
+	cast.value = (value) + 1.0;
+	return cast.ints[0] + cast.ints[1];
+}
+
+uint32_t hash_value(Value value)
+{
+	switch (value.type) {
+	case VAL_BOOL:
+		return AS_BOOL(value) ? 3 : 5;
+	case VAL_NUMBER:
+		return hash_double(AS_NUMBER(value));
+	case VAL_OBJ:
+		return AS_STRING(value)->hash;
+	case VAL_META:
+		return 0;
+	}
+	return 0;
+}
+
 void init_value_array(ValueArray *array)
 {
 	array->values = NULL;
@@ -40,7 +67,7 @@ void print_value(Value value)
 		printf("%g", AS_NUMBER(value));
 		break;
 	case VAL_META:
-		printf("()");
+		printf("<meta>");
 		break;
 	case VAL_OBJ:
 		print_object(value);

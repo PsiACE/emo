@@ -60,7 +60,7 @@ ObjString *take_string(ObjString *string)
 
 	string->hash = hash;
 
-	table_set(&vm.strings, string, META_VAL);
+	table_set(&vm.strings, OBJ_VAL(string), META_VAL);
 
 	return string;
 }
@@ -75,7 +75,7 @@ ObjString *hash_string(ObjString *string)
 
 	string->hash = hash;
 
-	table_set(&vm.strings, string, META_VAL);
+	table_set(&vm.strings, OBJ_VAL(string), META_VAL);
 
 	return string;
 }

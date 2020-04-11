@@ -21,15 +21,15 @@ void free_table(Table *table)
 	init_table(table);
 }
 
-static Entry *find_entry(Entry *entries, int capacity, ObjString *key)
+static Entry *find_entry(Entry *entries, int capacity, Value key)
 {
-	uint32_t index = key->hash % capacity;
+	uint32_t index = hash_value(key) % capacity;
 	Entry *tombstone = NULL;
 
 	for (;;) {
 		Entry *entry = &entries[index];
 
-		if (entry->key == NULL) {
+		if (IS_META(entry->key)) {
 			if (IS_META(entry->value)) {
 				// Empty entry.
 				return tombstone != NULL ? tombstone : entry;
@@ -38,7 +38,7 @@ static Entry *find_entry(Entry *entries, int capacity, ObjString *key)
 				if (tombstone == NULL)
 					tombstone = entry;
 			}
-		} else if (entry->key == key) {
+		} else if (values_equal(key, entry->key)) {
 			// We found the key.
 			return entry;
 		}
@@ -47,13 +47,13 @@ static Entry *find_entry(Entry *entries, int capacity, ObjString *key)
 	}
 }
 
-bool table_get(Table *table, ObjString *key, Value *value)
+bool table_get(Table *table, Value key, Value *value)
 {
 	if (table->count == 0)
 		return false;
 
 	Entry *entry = find_entry(table->entries, table->capacity, key);
-	if (entry->key == NULL)
+	if (IS_META(entry->key))
 		return false;
 
 	*value = entry->value;
@@ -64,14 +64,14 @@ static void adjust_capacity(Table *table, int capacity)
 {
 	Entry *entries = ALLOCATE(Entry, capacity);
 	for (int i = 0; i < capacity; i++) {
-		entries[i].key = NULL;
+		entries[i].key = META_VAL;
 		entries[i].value = META_VAL;
 	}
 
 	table->count = 0;
 	for (int i = 0; i < table->capacity; i++) {
 		Entry *entry = &table->entries[i];
-		if (entry->key == NULL)
+		if (IS_META(entry->key))
 			continue;
 
 		Entry *dest = find_entry(entries, capacity, entry->key);
@@ -85,7 +85,7 @@ static void adjust_capacity(Table *table, int capacity)
 	table->capacity = capacity;
 }
 
-bool table_set(Table *table, ObjString *key, Value value)
+bool table_set(Table *table, Value key, Value value)
 {
 	if (table->count + 1 > table->capacity * TABLE_MAX_LOAD) {
 		int capacity = GROW_CAPACITY(table->capacity);
@@ -94,7 +94,7 @@ bool table_set(Table *table, ObjString *key, Value value)
 
 	Entry *entry = find_entry(table->entries, table->capacity, key);
 
-	bool isNewKey = entry->key == NULL;
+	bool isNewKey = IS_META(entry->key);
 	if (isNewKey && IS_META(entry->value))
 		table->count++;
 
@@ -103,18 +103,18 @@ bool table_set(Table *table, ObjString *key, Value value)
 	return isNewKey;
 }
 
-bool table_delete(Table *table, ObjString *key)
+bool table_delete(Table *table, Value key)
 {
 	if (table->count == 0)
 		return false;
 
 	// Find the entry.
 	Entry *entry = find_entry(table->entries, table->capacity, key);
-	if (entry->key == NULL)
+	if (IS_META(entry->key))
 		return false;
 
 	// Place a tombstone in the entry.
-	entry->key = NULL;
+	entry->key = META_VAL;
 	entry->value = BOOL_VAL(true);
 
 	return true;
@@ -124,7 +124,7 @@ void table_add_all(Table *from, Table *to)
 {
 	for (int i = 0; i < from->capacity; i++) {
 		Entry *entry = &from->entries[i];
-		if (entry->key != NULL) {
+		if (!IS_META(entry->key)) {
 			table_set(to, entry->key, entry->value);
 		}
 	}
@@ -140,14 +140,13 @@ ObjString *table_find_string(Table *table, const char *chars, int length, uint32
 	for (;;) {
 		Entry *entry = &table->entries[index];
 
-		if (entry->key == NULL) {
-			// Stop if we find an empty non-tombstone entry.
-			if (IS_META(entry->value))
-				return NULL;
-		} else if (entry->key->length == length && entry->key->hash == hash &&
-				   memcmp(entry->key->chars, chars, length) == 0) {
+		if (IS_META(entry->key))
+			return NULL;
+
+		ObjString *string = AS_STRING(entry->key);
+		if (string->length == length && memcmp(string->chars, chars, length) == 0) {
 			// We found it.
-			return entry->key;
+			return string;
 		}
 
 		index = (index + 1) % table->capacity;
