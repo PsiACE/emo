@@ -17,6 +17,9 @@ static Obj *allocate_object(size_t size, ObjType type)
 	return object;
 }
 
+// TODO:
+// Now, we use the FNV 1a hash algorithm.
+// Maybe we can try `halfsiphash-1-3` or `ahash`
 static uint32_t hash_chars(const char *key, int length)
 {
 	uint32_t hash = 2166136261u;

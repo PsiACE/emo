@@ -14,5 +14,7 @@ void version();
 void overview();
 void options();
 void copyright();
+void repl_helper();
+void hit();
 
 #endif

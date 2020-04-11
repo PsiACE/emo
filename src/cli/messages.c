@@ -11,6 +11,13 @@ void help()
 	options();
 }
 
+void repl_helper()
+{
+	version();
+	copyright();
+	hit();
+}
+
 void overview()
 {
 	printf("The \"%s\" Repl and Compiler\n\n", __PROGRAM_NAME__);
@@ -38,4 +45,9 @@ void options()
 void version()
 {
 	printf("\"%s\" version: %s\n", __PROGRAM_NAME__, __PROGRAM_VERSION__);
+}
+
+void hit()
+{
+	printf("Type 'exit()' to exit\n");
 }

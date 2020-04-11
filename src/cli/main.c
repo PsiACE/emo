@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "cli/args.h"
+#include "cli/messages.h"
 #include "cli/styles.h"
 
 #include "core/chunk.h"
@@ -24,6 +25,7 @@ static char *read_line(char *prompt)
 
 static void run_repl()
 {
+	repl_helper();
 	char *line = NULL;
 	for (line = read_line("emo > "); line != NULL && strcmp(line, "exit()") != 0; line = read_line("emo > ")) {
 		// printf("> ");

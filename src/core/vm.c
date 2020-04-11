@@ -39,11 +39,13 @@ void init_vm()
 	vm.stackCapacity = 0;
 	reset_stack();
 	vm.objects = NULL;
+	init_table(&vm.globals);
 	init_table(&vm.strings);
 }
 
 void free_vm()
 {
+	free_table(&vm.globals);
 	free_table(&vm.strings);
 	free_objects();
 }
@@ -102,6 +104,7 @@ static InterpretResult run()
 {
 #define READ_BYTE() (*vm.ip++)
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+#define READ_STRING() AS_STRING(READ_CONSTANT())
 
 #define BINARY_OP(valueType, op)                                                                                       \
 	do {                                                                                                               \
@@ -139,6 +142,37 @@ static InterpretResult run()
 		case OP_FALSE:
 			push(BOOL_VAL(false));
 			break;
+		case OP_POP:
+			pop();
+			break;
+		case OP_META:
+			push(META_VAL);
+			break;
+		case OP_GET_GLOBAL: {
+			ObjString *name = READ_STRING();
+			Value value;
+			if (!table_get(&vm.globals, OBJ_VAL(name), &value)) {
+				runtime_error("Undefined variable '%s'.", name->chars);
+				return INTERPRET_RUNTIME_ERROR;
+			}
+			push(value);
+			break;
+		}
+		case OP_DEFINE_GLOBAL: {
+			ObjString *name = READ_STRING();
+			table_set(&vm.globals, OBJ_VAL(name), peek(0));
+			pop();
+			break;
+		}
+		case OP_SET_GLOBAL: {
+			ObjString *name = READ_STRING();
+			if (table_set(&vm.globals, OBJ_VAL(name), peek(0))) {
+				table_delete(&vm.globals, OBJ_VAL(name));
+				runtime_error("Undefined variable '%s'.", name->chars);
+				return INTERPRET_RUNTIME_ERROR;
+			}
+			break;
+		}
 		case OP_EQUAL: {
 			Value b = pop();
 			Value a = pop();
@@ -181,6 +215,11 @@ static InterpretResult run()
 
 			push(NUMBER_VAL(-AS_NUMBER(pop())));
 			break;
+		case OP_PRINT: {
+			print_value(pop());
+			printf("\n");
+			break;
+		}
 		case OP_CONSTANT_LONG: {
 			uint32_t index = READ_BYTE();
 			index |= READ_BYTE() << 8;
@@ -189,8 +228,10 @@ static InterpretResult run()
 			break;
 		}
 		case OP_RETURN: {
-			print_value(pop());
+            Value arbitraryValue = pop();
+            print_value(arbitraryValue);
 			printf("\n");
+            push(arbitraryValue);
 			return INTERPRET_OK;
 		}
 		}
@@ -198,6 +239,7 @@ static InterpretResult run()
 
 #undef READ_BYTE
 #undef READ_CONSTANT
+#undef READ_STRING
 #undef BINARY_OP
 }
 
