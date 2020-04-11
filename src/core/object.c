@@ -52,10 +52,16 @@ ObjString *take_string(ObjString *string)
 {
 	uint32_t hash = hash_chars(string->chars, string->length);
 	ObjString *interned = table_find_string(&vm.strings, string->chars, string->length, hash);
+
 	if (interned != NULL) {
 		reallocate(string, sizeof(ObjString) + string->length + 1, 0);
 		return interned;
 	}
+
+	string->hash = hash;
+
+	table_set(&vm.strings, string, META_VAL);
+
 	return string;
 }
 
