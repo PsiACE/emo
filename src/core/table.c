@@ -11,19 +11,19 @@
 void init_table(Table *table)
 {
 	table->count = 0;
-	table->capacity = 0;
+	table->capacity = -1;
 	table->entries = NULL;
 }
 
 void free_table(Table *table)
 {
-	FREE_ARRAY(Entry, table->entries, table->capacity);
+	FREE_ARRAY(Entry, table->entries, table->capacity + 1);
 	init_table(table);
 }
 
 static Entry *find_entry(Entry *entries, int capacity, Value key)
 {
-	uint32_t index = hash_value(key) % capacity;
+	uint32_t index = hash_value(key) & capacity;
 	Entry *tombstone = NULL;
 
 	for (;;) {
@@ -43,7 +43,7 @@ static Entry *find_entry(Entry *entries, int capacity, Value key)
 			return entry;
 		}
 
-		index = (index + 1) % capacity;
+		index = (index + 1) & capacity;
 	}
 }
 
@@ -62,14 +62,14 @@ bool table_get(Table *table, Value key, Value *value)
 
 static void adjust_capacity(Table *table, int capacity)
 {
-	Entry *entries = ALLOCATE(Entry, capacity);
-	for (int i = 0; i < capacity; i++) {
+	Entry *entries = ALLOCATE(Entry, capacity + 1);
+	for (int i = 0; i <= capacity; i++) {
 		entries[i].key = META_VAL;
 		entries[i].value = META_VAL;
 	}
 
 	table->count = 0;
-	for (int i = 0; i < table->capacity; i++) {
+	for (int i = 0; i <= table->capacity; i++) {
 		Entry *entry = &table->entries[i];
 		if (IS_META(entry->key))
 			continue;
@@ -80,15 +80,15 @@ static void adjust_capacity(Table *table, int capacity)
 		table->count++;
 	}
 
-	FREE_ARRAY(Entry, table->entries, table->capacity);
+	FREE_ARRAY(Entry, table->entries, table->capacity + 1);
 	table->entries = entries;
 	table->capacity = capacity;
 }
 
 bool table_set(Table *table, Value key, Value value)
 {
-	if (table->count + 1 > table->capacity * TABLE_MAX_LOAD) {
-		int capacity = GROW_CAPACITY(table->capacity);
+	if (table->count + 1 > (table->capacity + 1) * TABLE_MAX_LOAD) {
+		int capacity = GROW_CAPACITY(table->capacity + 1) - 1;
 		adjust_capacity(table, capacity);
 	}
 
@@ -122,7 +122,7 @@ bool table_delete(Table *table, Value key)
 
 void table_add_all(Table *from, Table *to)
 {
-	for (int i = 0; i < from->capacity; i++) {
+	for (int i = 0; i <= from->capacity; i++) {
 		Entry *entry = &from->entries[i];
 		if (!IS_META(entry->key)) {
 			table_set(to, entry->key, entry->value);
@@ -135,7 +135,7 @@ ObjString *table_find_string(Table *table, const char *chars, int length, uint32
 	if (table->count == 0)
 		return NULL;
 
-	uint32_t index = hash % table->capacity;
+	uint32_t index = hash & table->capacity;
 
 	for (;;) {
 		Entry *entry = &table->entries[index];
@@ -149,6 +149,6 @@ ObjString *table_find_string(Table *table, const char *chars, int length, uint32
 			return string;
 		}
 
-		index = (index + 1) % table->capacity;
+		index = (index + 1) & table->capacity;
 	}
 }
