@@ -148,6 +148,16 @@ static InterpretResult run()
 		case OP_META:
 			push(META_VAL);
 			break;
+		case OP_GET_LOCAL: {
+			uint8_t slot = READ_BYTE();
+			push(vm.stack[slot]);
+			break;
+		}
+		case OP_SET_LOCAL: {
+			uint8_t slot = READ_BYTE();
+			vm.stack[slot] = peek(0);
+			break;
+		}
 		case OP_GET_GLOBAL: {
 			Value value = vm.globalValues.values[READ_BYTE()];
 			if (IS_META(value)) {
