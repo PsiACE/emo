@@ -228,10 +228,10 @@ static InterpretResult run()
 			break;
 		}
 		case OP_RETURN: {
-            Value arbitraryValue = pop();
-            print_value(arbitraryValue);
+			Value arbitraryValue = pop();
+			print_value(arbitraryValue);
 			printf("\n");
-            push(arbitraryValue);
+			push(arbitraryValue);
 			return INTERPRET_OK;
 		}
 		}

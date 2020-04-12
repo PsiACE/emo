@@ -9,10 +9,10 @@ typedef enum {
 	OP_TRUE,
 	OP_FALSE,
 	OP_POP,
-    OP_META, // `meta` means noting
-    OP_GET_GLOBAL,
-    OP_DEFINE_GLOBAL,
-    OP_SET_GLOBAL,  
+	OP_META, // `meta` means noting
+	OP_GET_GLOBAL,
+	OP_DEFINE_GLOBAL,
+	OP_SET_GLOBAL,
 	OP_EQUAL,
 	OP_GREATER,
 	OP_LESS,
