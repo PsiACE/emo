@@ -86,7 +86,7 @@ bool values_equal(Value a, Value b)
 	case VAL_NUMBER:
 		return AS_NUMBER(a) == AS_NUMBER(b);
 	case VAL_META:
-		return true; // `meta` is a default meta.
+		return false; // Like snowflakes, no `meta` is the same.
 	case VAL_OBJ:
 		return AS_OBJ(a) == AS_OBJ(b);
 	}

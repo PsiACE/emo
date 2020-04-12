@@ -168,7 +168,18 @@ static void parse_precedence(Precedence precedence);
 
 static uint8_t identifier_constant(Token *name)
 {
-	return add_constant(compilingChunk, OBJ_VAL(copy_string(name->start, name->length)));
+	Value index;
+	ObjString *identifier = copy_string(name->start, name->length);
+	if (table_get(&vm.globalNames, OBJ_VAL(identifier), &index)) {
+		return (uint8_t)AS_NUMBER(index);
+	}
+
+	write_value_array(&vm.globalValues, META_VAL);
+	uint8_t newIndex = (uint8_t)vm.globalValues.count;
+
+	table_set(&vm.globalNames, OBJ_VAL(identifier), NUMBER_VAL((double)newIndex));
+	return newIndex;
+	// return add_constant(compilingChunk, OBJ_VAL(copy_string(name->start, name->length)));
 }
 
 static uint8_t parse_variable(const char *errorMessage)
@@ -452,10 +463,12 @@ bool compile(const char *source, Chunk *chunk)
 	compilingChunk = chunk;
 	parser.hadError = false;
 	parser.panicMode = false;
+
 	advance();
 	while (!match(TOKEN_EOF)) {
 		declaration();
 	}
+
 	end_compiler();
 	return !parser.hadError;
 }
