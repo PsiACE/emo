@@ -44,7 +44,12 @@ typedef struct {
 	int depth;
 } Local;
 
+typedef enum { TYPE_FUNCTION, TYPE_SCRIPT } FunctionType;
+
 typedef struct Compiler {
+	ObjFunction *function;
+	FunctionType type;
+
 	Local locals[UINT8_COUNT];
 	int localCount;
 	int scopeDepth;
@@ -54,11 +59,9 @@ Parser parser;
 
 Compiler *current = NULL;
 
-Chunk *compilingChunk;
-
 static Chunk *current_chunk()
 {
-	return compilingChunk;
+	return &current->function->chunk;
 }
 
 static void error_at(Token *token, const char *message)
@@ -160,7 +163,7 @@ static int emit_jump(uint8_t instruction)
 
 static void emit_return()
 {
-    emit_byte(OP_META); 
+	emit_byte(OP_META);
 	emit_byte(OP_RETURN);
 }
 
@@ -198,21 +201,31 @@ static void patch_jump(int offset)
 	current_chunk()->code[offset + 1] = jump & 0xff;
 }
 
-static void init_compiler(Compiler *compiler)
+static void init_compiler(Compiler *compiler, FunctionType type)
 {
+	compiler->function = NULL;
+	compiler->type = type;
 	compiler->localCount = 0;
 	compiler->scopeDepth = 0;
+	compiler->function = new_function();
 	current = compiler;
+
+	Local *local = &current->locals[current->localCount++];
+	local->depth = 0;
+	local->name.start = "";
+	local->name.length = 0;
 }
 
-static void end_compiler()
+static ObjFunction *end_compiler()
 {
 	emit_return();
+	ObjFunction *function = current->function;
 #ifdef DEBUG_PRINT_CODE
 	if (!parser.hadError) {
-		disassemble_chunk(current_chunk(), "code");
+		disassemble_chunk(current_chunk(), function->name != NULL ? function->name->chars : "<script>");
 	}
 #endif
+	return function;
 }
 
 static void begin_scope()
@@ -726,12 +739,11 @@ static void statement()
 	}
 }
 
-bool compile(const char *source, Chunk *chunk)
+ObjFunction *compile(const char *source)
 {
 	init_scanner(source);
 	Compiler compiler;
-	init_compiler(&compiler);
-	compilingChunk = chunk;
+	init_compiler(&compiler, TYPE_SCRIPT);
 	parser.hadError = false;
 	parser.panicMode = false;
 
@@ -740,6 +752,6 @@ bool compile(const char *source, Chunk *chunk)
 		declaration();
 	}
 
-	end_compiler();
-	return !parser.hadError;
+	ObjFunction *function = end_compiler();
+	return parser.hadError ? NULL : function;
 }

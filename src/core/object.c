@@ -17,6 +17,16 @@ static Obj *allocate_object(size_t size, ObjType type)
 	return object;
 }
 
+ObjFunction *new_function()
+{
+	ObjFunction *function = ALLOCATE_OBJ(ObjFunction, OBJ_FUNCTION);
+
+	function->arity = 0;
+	function->name = NULL;
+	init_chunk(&function->chunk);
+	return function;
+}
+
 // TODO:
 // Now, we use the FNV 1a hash algorithm.
 // Maybe we can try `halfsiphash-1-3` or `ahash`
@@ -83,9 +93,21 @@ ObjString *hash_string(ObjString *string)
 	return string;
 }
 
+static void print_function(ObjFunction *function)
+{
+	if (function->name == NULL) {
+		printf("<script>");
+		return;
+	}
+	printf("<fn %s>", function->name->chars);
+}
+
 void print_object(Value value)
 {
 	switch (OBJ_TYPE(value)) {
+	case OBJ_FUNCTION:
+		print_function(AS_FUNCTION(value));
+		break;
 	case OBJ_STRING:
 		printf("%s", AS_CSTRING(value));
 		break;

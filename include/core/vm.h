@@ -4,10 +4,21 @@
 #include <stdint.h>
 
 #include "core/chunk.h"
+#include "core/object.h"
 #include "core/table.h"
 #include "core/value.h"
 
+#define FRAMES_MAX 64
+
 typedef struct {
+	ObjFunction *function;
+	uint8_t *ip;
+	Value *slots;
+} CallFrame;
+
+typedef struct {
+	CallFrame frames[FRAMES_MAX];
+	int frameCount;
 	Chunk *chunk;
 	uint8_t *ip;
 	Value *stack;
