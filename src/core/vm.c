@@ -170,7 +170,6 @@ static InterpretResult run()
 		}
 		case OP_DEFINE_GLOBAL: {
 			vm.globalValues.values[READ_BYTE()] = pop();
-			pop();
 			break;
 		}
 		case OP_SET_GLOBAL: {
