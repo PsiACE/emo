@@ -126,7 +126,7 @@ static TokenType identifier_type()
 	case 'e':
 		return check_keyword(1, 3, "lse", TOKEN_ELSE);
 	case 'f':
-		if (scanner.current - scanner.start > 1) {
+		if (scanner.current - scanner.start > 2) {
 			switch (scanner.start[1]) {
 			case 'a':
 				return check_keyword(2, 3, "lse", TOKEN_FALSE);
