@@ -9,6 +9,7 @@
 #include "core/value.h"
 
 #define FRAMES_MAX 64
+#define STACK_MAX (FRAMES_MAX * UINT8_COUNT)
 
 typedef struct {
 	ObjFunction *function;
@@ -21,12 +22,12 @@ typedef struct {
 	int frameCount;
 	Chunk *chunk;
 	uint8_t *ip;
-	Value *stack;
-	int stackCount;
-	int stackCapacity;
-	// Table globals;
-	Table globalNames;
-	ValueArray globalValues;
+	Value stack[STACK_MAX];
+	Value *stackTop;
+	// Value *stack;
+	// int stackCount;
+	// int stackCapacity;
+	Table globals;
 	Table strings;
 	Obj *objects;
 } VM;

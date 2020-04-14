@@ -14,7 +14,8 @@ VM vm;
 
 static void reset_stack()
 {
-	vm.stackCount = 0;
+	vm.stackTop = vm.stack;
+	// vm.stackCount = 0;
 	vm.frameCount = 0;
 }
 
@@ -26,55 +27,108 @@ static void runtime_error(const char *format, ...)
 	va_end(args);
 	fputs("\n", stderr);
 
-	CallFrame *frame = &vm.frames[vm.frameCount - 1];
-	size_t instructionOffset = frame->ip - frame->function->chunk.code - 1;
-	//   int line = frame->function->chunk.lines[instruction];
-	int line = get_line(&frame->function->chunk.lines, instructionOffset);
-	fprintf(stderr, "[line %d] in script\n", line);
+	for (int i = vm.frameCount - 1; i >= 0; i--) {
+		CallFrame *frame = &vm.frames[i];
+		ObjFunction *function = frame->function;
+		// -1 because the IP is sitting on the next instruction to be
+		// executed.
+		size_t instructionOffset = frame->ip - function->chunk.code - 1;
+		int line = get_line(&function->chunk.lines, instructionOffset);
+		fprintf(stderr, "[line %d] in ", line);
+		// fprintf(stderr, "[line %d] in ", function->chunk.lines[instruction]);
+		if (function->name == NULL) {
+			fprintf(stderr, "script\n");
+		} else {
+			fprintf(stderr, "%s()\n", function->name->chars);
+		}
+	}
 
 	reset_stack();
 }
 
 void init_vm()
 {
-	vm.stack = NULL;
-	vm.stackCapacity = 0;
+	// vm.stack = NULL;
+	// vm.stackCapacity = 0;
 	reset_stack();
 	vm.objects = NULL;
-	init_table(&vm.globalNames);
+	init_table(&vm.globals);
 	init_table(&vm.strings);
 }
 
 void free_vm()
 {
-	free_table(&vm.globalNames);
+	free_table(&vm.globals);
 	free_table(&vm.strings);
 	free_objects();
 }
 
 void push(Value value)
 {
-	if (vm.stackCapacity < vm.stackCount + 1) {
-		int oldCapacity = vm.stackCapacity;
-		vm.stackCapacity = GROW_CAPACITY(oldCapacity);
-		vm.stack = GROW_ARRAY(vm.stack, Value, oldCapacity, vm.stackCapacity);
-	}
+	*vm.stackTop = value;
+	vm.stackTop++;
+	// if (vm.stackCapacity < vm.stackCount + 1) {
+	// 	int oldCapacity = vm.stackCapacity;
+	// 	vm.stackCapacity = GROW_CAPACITY(oldCapacity);
+	// 	vm.stack = GROW_ARRAY(vm.stack, Value, oldCapacity, vm.stackCapacity);
+	// }
 
-	vm.stack[vm.stackCount] = value;
-	vm.stackCount++;
+	// vm.stack[vm.stackCount] = value;
+	// vm.stackCount++;
 }
 
 Value pop()
 {
-	vm.stackCount--;
-	return vm.stack[vm.stackCount];
+	return *--vm.stackTop;
+	// vm.stackCount--;
+	// return vm.stack[vm.stackCount];
 }
 
 // First, we check to see if the value on top of the stack is a number.
 static Value peek(int distance)
 {
-	int look = vm.stackCount;
-	return vm.stack[look - 1 - distance];
+	return vm.stackTop[-1 - distance];
+	// int look = vm.stackCount;
+	// return vm.stack[look - 1 - distance];
+}
+
+static bool call(ObjFunction *function, int argCount)
+{
+	if (argCount != function->arity) {
+		runtime_error("Expected %d arguments but got %d.", function->arity, argCount);
+		return false;
+	}
+
+	if (vm.frameCount == FRAMES_MAX) {
+		runtime_error("Stack overflow.");
+		return false;
+	}
+
+	CallFrame *frame = &vm.frames[vm.frameCount++];
+	frame->function = function;
+	frame->ip = function->chunk.code;
+
+	// int slots = vm.stackCount - argCount - 1;
+	// frame->slots = &vm.stack[slots];
+	frame->slots = vm.stackTop - argCount - 1;
+	return true;
+}
+
+static bool call_value(Value callee, int argCount)
+{
+	if (IS_OBJ(callee)) {
+		switch (OBJ_TYPE(callee)) {
+		case OBJ_FUNCTION:
+			return call(AS_FUNCTION(callee), argCount);
+
+		default:
+			// Non-callable object type.
+			break;
+		}
+	}
+
+	runtime_error("Can only call functions and classes.");
+	return false;
 }
 
 static bool is_falsey(Value value)
@@ -126,7 +180,8 @@ static InterpretResult run()
 	for (;;) {
 #ifdef DEBUG_TRACE_EXECUTION
 		printf("          ");
-		for (Value *slot = vm.stack; slot < &vm.stack[vm.stackCount]; slot++) {
+		for (Value *slot = vm.stack; slot < vm.stackTop; slot++) {
+			// for (Value *slot = vm.stack; slot < &vm.stack[vm.stackCount]; slot++) {
 			printf("[ ");
 			print_value(*slot);
 			printf(" ]");
@@ -164,25 +219,28 @@ static InterpretResult run()
 			break;
 		}
 		case OP_GET_GLOBAL: {
-			Value value = vm.globalValues.values[READ_BYTE()];
-			if (IS_META(value)) {
-				runtime_error("Undefined variable.");
+			ObjString *name = READ_STRING();
+			Value value;
+			if (!table_get(&vm.globals, OBJ_VAL(name), &value)) {
+				runtime_error("Undefined variable '%s'.", name->chars);
 				return INTERPRET_RUNTIME_ERROR;
 			}
 			push(value);
 			break;
 		}
 		case OP_DEFINE_GLOBAL: {
-			vm.globalValues.values[READ_BYTE()] = pop();
+			ObjString *name = READ_STRING();
+			table_set(&vm.globals, OBJ_VAL(name), peek(0));
+			pop();
 			break;
 		}
 		case OP_SET_GLOBAL: {
-			uint8_t index = READ_BYTE();
-			if (IS_META(vm.globalValues.values[index])) {
-				runtime_error("Undefined variable.");
+			ObjString *name = READ_STRING();
+			if (table_set(&vm.globals, OBJ_VAL(name), peek(0))) {
+				table_delete(&vm.globals, OBJ_VAL(name));
+				runtime_error("Undefined variable '%s'.", name->chars);
 				return INTERPRET_RUNTIME_ERROR;
 			}
-			vm.globalValues.values[index] = peek(0);
 			break;
 		}
 		case OP_EQUAL: {
@@ -241,12 +299,19 @@ static InterpretResult run()
 			uint16_t offset = READ_SHORT();
 			if (is_falsey(peek(0)))
 				frame->ip += offset;
-
 			break;
 		}
 		case OP_LOOP: {
 			uint16_t offset = READ_SHORT();
 			frame->ip -= offset;
+			break;
+		}
+		case OP_CALL: {
+			int argCount = READ_BYTE();
+			if (!call_value(peek(argCount), argCount)) {
+				return INTERPRET_RUNTIME_ERROR;
+			}
+			frame = &vm.frames[vm.frameCount - 1];
 			break;
 		}
 		case OP_CONSTANT_LONG: {
@@ -257,11 +322,20 @@ static InterpretResult run()
 			break;
 		}
 		case OP_RETURN: {
-			Value arbitraryValue = pop();
-			print_value(arbitraryValue);
-			printf("\n");
-			push(arbitraryValue);
-			return INTERPRET_OK;
+			Value result = pop();
+
+			vm.frameCount--;
+			if (vm.frameCount == 0) {
+				return INTERPRET_OK;
+			}
+
+			// vm.stack[vm.stackCount] = *frame->slots;
+			vm.stackTop = frame->slots;
+
+			push(result);
+
+			frame = &vm.frames[vm.frameCount - 1];
+			break;
 		}
 		}
 	}
@@ -280,10 +354,7 @@ InterpretResult interpret(const char *source)
 		return INTERPRET_COMPILE_ERROR;
 
 	push(OBJ_VAL(function));
-	CallFrame *frame = &vm.frames[vm.frameCount++];
-	frame->function = function;
-	frame->ip = function->chunk.code;
-	frame->slots = vm.stack;
+	call_value(OBJ_VAL(function), 0);
 
 	return run();
 }
