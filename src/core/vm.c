@@ -133,7 +133,7 @@ static bool call_value(Value callee, int argCount)
 
 static bool is_falsey(Value value)
 {
-	return (IS_BOOL(value) && !AS_BOOL(value));
+	return IS_META(value) || (IS_BOOL(value) && !AS_BOOL(value));
 }
 
 static void concatenate()
