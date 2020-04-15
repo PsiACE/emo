@@ -17,6 +17,13 @@ static Obj *allocate_object(size_t size, ObjType type)
 	return object;
 }
 
+ObjNative *new_native(NativeFn function)
+{
+	ObjNative *native = ALLOCATE_OBJ(ObjNative, OBJ_NATIVE);
+	native->function = function;
+	return native;
+}
+
 ObjFunction *new_function()
 {
 	ObjFunction *function = ALLOCATE_OBJ(ObjFunction, OBJ_FUNCTION);
@@ -107,6 +114,9 @@ void print_object(Value value)
 	switch (OBJ_TYPE(value)) {
 	case OBJ_FUNCTION:
 		print_function(AS_FUNCTION(value));
+		break;
+	case OBJ_NATIVE:
+		printf("<native fn>");
 		break;
 	case OBJ_STRING:
 		printf("%s", AS_CSTRING(value));
