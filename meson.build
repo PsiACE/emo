@@ -6,6 +6,8 @@ project('emo', 'c',
 
 config_h = configuration_data()
 config_h.set_quoted('PACKAGE_VERSION', meson.project_version())
+config_h.set('DEBUG', false)
+
 configure_file(
   output: 'emo-config.h',
   configuration: config_h,

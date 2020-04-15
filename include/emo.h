@@ -8,4 +8,10 @@
 #define PROGRAM_COPYRIGHT "2020"
 #define PROGRAM_AUTHOR "Chojan Shang <psiace@outlook.com>"
 
+#ifdef DEBUG
+#define DEBUG_OPTIONS
+#define DEBUG_TRACE_EXECUTION
+#define DEBUG_PRINT_CODE
+#endif
+
 #endif
