@@ -1,0 +1,17 @@
+let globalSet;
+let globalGet;
+
+fn main() {
+  let a = "initial";
+
+  fn set() { a = "updated"; 
+  }
+  fn get() { print(a); }
+
+  globalSet = set;
+  globalGet = get;
+}
+
+main();
+globalSet();
+globalGet();
