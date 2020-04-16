@@ -2,9 +2,11 @@
 
 > Emotions allow us to express ourselves better.
 
-_**WIP**_
-
 The `"emo"` programming language is dedicated to exploring simple yet expressive methods, powerful and easy to use.
+
+ _**WIP**_ This project is still in the stage of personal development and research, and only accepts the submission of optimization and patches, but any discussion on design and features is welcome.
+
+If you are familiar with any C-like programming language, you can easily understand the syntax rules of `"emo"`. Of course, `"emo"` also draws some inspiration from other more modern programming languages to improve readability and programming experience.
 
 ## Usage
 
