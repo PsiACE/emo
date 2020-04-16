@@ -1,0 +1,7 @@
+let x = 10;
+let i = 0;
+
+while(i < x) {
+    print(i);
+    i = i + 1;
+}

@@ -1,0 +1,6 @@
+fn noReturn() {
+  print("Do stuff");
+  // No return here.
+}
+
+print(noReturn()); // ???

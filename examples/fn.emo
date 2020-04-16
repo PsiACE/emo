@@ -1,0 +1,12 @@
+fn first() {
+  let a = 1;
+  second();
+  let b = 2;
+}
+
+fn second() {
+  let c = 3;
+  let d = 4;
+}
+
+first();
