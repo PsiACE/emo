@@ -203,7 +203,7 @@ static InterpretResult run()
 	for (;;) {
 #ifdef DEBUG_TRACE_EXECUTION
 		printf("          ");
-		for (Value *slot = vm.stack; slot < vm.stackTop; slot++) {
+		for (Value *slot = vm.stack; slot < vm.stackTop; ++slot) {
 			// for (Value *slot = vm.stack; slot < &vm.stack[vm.stackCount]; slot++) {
 			printf("[ ");
 			print_value(*slot);

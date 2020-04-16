@@ -39,12 +39,15 @@ ObjFunction *new_function()
 // Maybe we can try `halfsiphash-1-3` or `ahash`
 static uint32_t hash_chars(const char *key, int length)
 {
-	uint32_t hash = 2166136261u;
+	register uint32_t hash = 2166136261u;
 
-	for (int i = 0; i < length; i++) {
+	for (int i = length; i != 0; i--) {
 		hash ^= key[i];
 		hash *= 16777619;
 	}
+
+	hash ^= key[0];
+	hash *= 16777619;
 
 	return hash;
 }

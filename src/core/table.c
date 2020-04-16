@@ -63,13 +63,13 @@ bool table_get(Table *table, Value key, Value *value)
 static void adjust_capacity(Table *table, int capacity)
 {
 	Entry *entries = ALLOCATE(Entry, capacity + 1);
-	for (int i = 0; i <= capacity; i++) {
+	for (int i = 0; i <= capacity; ++i) {
 		entries[i].key = META_VAL;
 		entries[i].value = META_VAL;
 	}
 
 	table->count = 0;
-	for (int i = 0; i <= table->capacity; i++) {
+	for (int i = 0; i <= table->capacity; ++i) {
 		Entry *entry = &table->entries[i];
 		if (IS_META(entry->key))
 			continue;
@@ -122,7 +122,7 @@ bool table_delete(Table *table, Value key)
 
 void table_add_all(Table *from, Table *to)
 {
-	for (int i = 0; i <= from->capacity; i++) {
+	for (int i = 0; i <= from->capacity; ++i) {
 		Entry *entry = &from->entries[i];
 		if (!IS_META(entry->key)) {
 			table_set(to, entry->key, entry->value);
