@@ -709,18 +709,30 @@ static void for_statement()
 {
 	begin_scope();
 
+	// 1: Grab the name and slot of the loop variable so we can refer to it later.
+	int loopVariable = -1;
+	Token loopVariableName;
+	loopVariableName.start = NULL;
+	// end.
+
 	consume(TOKEN_LEFT_PAREN, "Expect '(' after 'for'.");
-	if (match(TOKEN_SEMICOLON)) {
-		// No initializer.
-	} else if (match(TOKEN_LET)) {
+	if (match(TOKEN_LET)) {
+		// 1: Grab the name of the loop variable.
+		loopVariableName = parser.current;
+		// end.
 		var_declaration();
+		// 1: And get its slot.
+		loopVariable = current->localCount - 1;
+		// end.
+	} else if (match(TOKEN_SEMICOLON)) {
+		// No initializer.
 	} else {
 		expression_statement();
 	}
 
 	int loopStart = current_chunk()->count;
-	int exitJump = -1;
 
+	int exitJump = -1;
 	if (!match(TOKEN_SEMICOLON)) {
 		expression();
 		consume(TOKEN_SEMICOLON, "Expect ';' after loop condition.");
@@ -743,7 +755,33 @@ static void for_statement()
 		patch_jump(bodyJump);
 	}
 
+	// 1: If the loop declares a variable...
+	int innerVariable = -1;
+	if (loopVariable != -1) {
+		// 1: Create a scope for the copy...
+		begin_scope();
+		// 1: Define a new variable initialized with the current value of the loop
+		//    variable.
+		emit_bytes(OP_GET_LOCAL, (uint8_t)loopVariable);
+		add_local(loopVariableName);
+		mark_initialized();
+		// 1: Keep track of its slot.
+		innerVariable = current->localCount - 1;
+	}
+	// end.
+
 	statement();
+
+	// 3: If the loop declares a variable...
+	if (loopVariable != -1) {
+		// 3: Store the inner variable back in the loop variable.
+		emit_bytes(OP_GET_LOCAL, (uint8_t)innerVariable);
+		emit_bytes(OP_SET_LOCAL, (uint8_t)loopVariable);
+		emit_byte(OP_POP);
+
+		// 4: Close the temporary scope for the copy of the loop variable.
+		end_scope();
+	}
 
 	emit_loop(loopStart);
 
