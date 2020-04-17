@@ -17,6 +17,8 @@ For example, on the fedora platform, run `dnf install meson`.
 git clone git@github.com:PsiACE/emo.git # or https://github.com/psiace/emo.git
 cd emo
 meson builddir
+# Just for compiler optimization. Otherwise it will be very slow, because by default the compilation contains debug information.
+meson configure build -Dc_args="-O3" 
 ninja -C builddir # -j8
 meson install # for test, just run `./builddir/src/emo`
 ```
