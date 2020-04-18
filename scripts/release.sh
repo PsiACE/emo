@@ -10,11 +10,11 @@ DEST=${MESON_BUILD_ROOT}
 DIST=$DEST/dist/$PKGVER
 SRC=${MESON_SOURCE_ROOT}
 
-cd "${MESON_SOURCE_ROOT}"
+cd "${SRC}" || exit 1
 mkdir -p "${DIST}"
 
 ginst() {
-	cp -rf $@ "${DIST}"
+	cp -rf "$@" "${DIST}"
 }
 
 ginst \
@@ -26,5 +26,5 @@ ginst \
     include \
 
 # packaging
-cd "${DEST}"/dist
-tar cJvf $PKGVER.tar.xz $PKGVER
+cd "${DEST}"/dist || exit 1
+tar cJvf "$PKGVER.tar.xz" "$PKGVER"
