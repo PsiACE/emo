@@ -22,11 +22,9 @@ typedef struct {
 	int frameCount;
 	Chunk *chunk;
 	uint8_t *ip;
-	Value stack[STACK_MAX];
-	Value *stackTop;
-	// Value *stack;
-	// int stackCount;
-	// int stackCapacity;
+    Value* stack;
+    Value* stackTop;
+    int stackCapacity;
 	Table globals;
 	Table strings;
 	ObjUpvalue *openUpvalues;

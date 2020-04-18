@@ -24,8 +24,8 @@ static Value clock_native(int argCount, Value *args)
 
 static void reset_stack()
 {
+	vm.stack = GROW_ARRAY(vm.stack, Value, 0, vm.stackCapacity);
 	vm.stackTop = vm.stack;
-	// vm.stackCount = 0;
 	vm.frameCount = 0;
 	vm.openUpvalues = NULL;
 }
@@ -72,8 +72,9 @@ static void define_native(const char *name, NativeFn function)
 
 void init_vm()
 {
-	// vm.stack = NULL;
-	// vm.stackCapacity = 0;
+	vm.stackCapacity = STACK_MAX;
+	vm.stack = NULL;
+	vm.stackTop = vm.stack;
 	reset_stack();
 	vm.objects = NULL;
 	init_table(&vm.globals);
@@ -90,23 +91,24 @@ void free_vm()
 
 void push(Value value)
 {
+	int count = (int)(vm.stackTop - vm.stack);
+	if (count == vm.stackCapacity) {
+		int oldCapacity = vm.stackCapacity;
+		vm.stackCapacity = GROW_CAPACITY(oldCapacity * FRAMES_MAX);
+		vm.stack = GROW_ARRAY(vm.stack, Value, oldCapacity, vm.stackCapacity);
+		vm.stackTop = vm.stack + count;
+	}
 	*vm.stackTop = value;
 	vm.stackTop++;
-	// if (vm.stackCapacity < vm.stackCount + 1) {
-	// 	int oldCapacity = vm.stackCapacity;
-	// 	vm.stackCapacity = GROW_CAPACITY(oldCapacity);
-	// 	vm.stack = GROW_ARRAY(vm.stack, Value, oldCapacity, vm.stackCapacity);
-	// }
-
-	// vm.stack[vm.stackCount] = value;
-	// vm.stackCount++;
 }
 
 Value pop()
 {
+	if (vm.stackTop == vm.stack) {
+		fprintf(stderr, "[vm.c : pop()] - attempt to pop empty stack.");
+		exit(1);
+	}
 	return *--vm.stackTop;
-	// vm.stackCount--;
-	// return vm.stack[vm.stackCount];
 }
 
 // First, we check to see if the value on top of the stack is a number.
