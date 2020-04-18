@@ -68,4 +68,6 @@ void free_chunk(Chunk *chunk);
 int add_constant(Chunk *chunk, Value value);
 void write_constant(Chunk *chunk, Value value, int line);
 
+int get_line(LineRecordArray *array, int offset);
+
 #endif

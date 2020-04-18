@@ -14,38 +14,6 @@ void disassemble_chunk(Chunk *chunk, const char *name)
 	}
 }
 
-// int get_line(LineRecordArray *array, int offset)
-// {
-// 	int start = 0;
-// 	int end = array->count - 1;
-
-// 	for (;;) {
-// 		int mid = (start + end) / 2;
-// 		if (offset > array->linemarks[mid].offset) {
-// 			end = mid - 1;
-// 		} else if (mid == array->count - 1 || offset > array->linemarks[mid + 1].offset) {
-// 			return array->linemarks[mid].linemark;
-// 		} else {
-// 			start = mid + 1;
-// 		}
-// 	}
-// }
-
-int get_line(LineRecordArray *array, int offset)
-{
-	int offsetLeft = offset;
-
-	for (int index = 0; index < array->count; index++) {
-		if (array->linemarks[index].offset > offsetLeft) {
-			return array->linemarks[index].linemark;
-		}
-		offsetLeft -= array->linemarks[index].offset;
-	}
-
-	printf("Error : get_line() returns -1 \n");
-	return -1;
-}
-
 static int constant_instruction(const char *name, Chunk *chunk, int offset)
 {
 	uint8_t constant = chunk->code[offset + 1];

@@ -8,7 +8,6 @@
 
 #include "core/chunk.h"
 #include "core/common.h"
-#include "core/debug.h"
 #include "core/vm.h"
 
 static char buffer[2048];

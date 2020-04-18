@@ -6,11 +6,14 @@
 
 #include "core/common.h"
 #include "core/compiler.h"
-#include "core/debug.h"
 #include "core/memory.h"
 #include "core/object.h"
 #include "core/value.h"
 #include "core/vm.h"
+
+#ifdef DEBUG_TRACE_EXECUTION
+#include "core/debug.h"
+#endif
 
 VM vm;
 

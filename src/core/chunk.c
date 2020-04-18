@@ -100,3 +100,35 @@ void write_constant(Chunk *chunk, Value value, int line)
 		write_chunk(chunk, (uint8_t)((index >> 16) & 0xff), line);
 	}
 }
+
+// int get_line(LineRecordArray *array, int offset)
+// {
+// 	int start = 0;
+// 	int end = array->count - 1;
+
+// 	for (;;) {
+// 		int mid = (start + end) / 2;
+// 		if (offset > array->linemarks[mid].offset) {
+// 			end = mid - 1;
+// 		} else if (mid == array->count - 1 || offset > array->linemarks[mid + 1].offset) {
+// 			return array->linemarks[mid].linemark;
+// 		} else {
+// 			start = mid + 1;
+// 		}
+// 	}
+// }
+
+int get_line(LineRecordArray *array, int offset)
+{
+	int offsetLeft = offset;
+
+	for (int index = 0; index < array->count; index++) {
+		if (array->linemarks[index].offset > offsetLeft) {
+			return array->linemarks[index].linemark;
+		}
+		offsetLeft -= array->linemarks[index].offset;
+	}
+
+	printf("Error : get_line() returns -1 \n");
+	return -1;
+}
