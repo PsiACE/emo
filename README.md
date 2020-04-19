@@ -1,5 +1,8 @@
 # `"emo"`
 
+![workflow](https://github.com/PsiACE/emo/workflows/ci_meson/badge.svg)
+![quality](https://www.code-inspector.com/project/6258/status/svg)
+
 > Emotions allow us to express ourselves better.
 
 The `"emo"` programming language is dedicated to exploring simple yet expressive methods, powerful and easy to use.
