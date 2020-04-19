@@ -34,12 +34,12 @@ static char advance()
 	return scanner.current[-1];
 }
 
-static char peek()
+static char speek()
 {
 	return *scanner.current;
 }
 
-static char peek_next()
+static char speek_next()
 {
 	if (is_at_end())
 		return '\0';
@@ -82,7 +82,7 @@ static Token error_token(const char *message)
 static void skip_whitespace()
 {
 	for (;;) {
-		char c = peek();
+		char c = speek();
 		switch (c) {
 		case ' ':
 		case '\r':
@@ -94,9 +94,9 @@ static void skip_whitespace()
 			advance();
 			break;
 		case '/':
-			if (peek_next() == '/') {
+			if (speek_next() == '/') {
 				// A comment goes until the end of the line.
-				while (peek() != '\n' && !is_at_end())
+				while (speek() != '\n' && !is_at_end())
 					advance();
 			} else {
 				return;
@@ -159,7 +159,7 @@ static TokenType identifier_type()
 
 static Token identifier()
 {
-	while (is_alpha(peek()) || is_digit(peek()))
+	while (is_alpha(speek()) || is_digit(speek()))
 		advance();
 
 	return make_token(identifier_type());
@@ -167,15 +167,15 @@ static Token identifier()
 
 static Token number()
 {
-	while (is_digit(peek()))
+	while (is_digit(speek()))
 		advance();
 
 	// Look for a fractional part.
-	if (peek() == '.' && is_digit(peek_next())) {
+	if (speek() == '.' && is_digit(speek_next())) {
 		// Consume the ".".
 		advance();
 
-		while (is_digit(peek()))
+		while (is_digit(speek()))
 			advance();
 	}
 
@@ -184,8 +184,8 @@ static Token number()
 
 static Token string()
 {
-	while (peek() != '"' && !is_at_end()) {
-		if (peek() == '\n')
+	while (speek() != '"' && !is_at_end()) {
+		if (speek() == '\n')
 			scanner.line++;
 		advance();
 	}
