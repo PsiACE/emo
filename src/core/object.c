@@ -17,7 +17,7 @@ static Obj *allocate_object(size_t size, ObjType type)
 	vm.objects = object;
 
 #ifdef DEBUG_LOG_GC
-	printf("%p allocate %ld for %d\n", (void *)object, size, type);
+	printf("%p allocate %zu for %d\n", (void *)object, size, type);
 #endif
 
 	return object;
@@ -147,26 +147,3 @@ void print_object(Value value)
 		break;
 	}
 }
-
-// static ObjString *allocate_string(char *chars, int length)
-// {
-// 	ObjString *string = ALLOCATE_OBJ(ObjString, OBJ_STRING);
-// 	string->length = length;
-// 	string->chars = chars;
-
-// 	return string;
-// }
-
-// ObjString *take_string(char *chars, int length)
-// {
-// 	return allocate_string(chars, length);
-// }
-
-// ObjString *copy_string(const char *chars, int length)
-// {
-// 	char *heapChars = ALLOCATE(char, length + 1);
-// 	memcpy(heapChars, chars, length);
-// 	heapChars[length] = '\0';
-
-// 	return allocate_string(heapChars, length);
-// }

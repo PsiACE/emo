@@ -104,23 +104,6 @@ void write_constant(Chunk *chunk, Value value, int line)
 	}
 }
 
-// int get_line(LineRecordArray *array, int offset)
-// {
-// 	int start = 0;
-// 	int end = array->count - 1;
-
-// 	for (;;) {
-// 		int mid = (start + end) / 2;
-// 		if (offset > array->linemarks[mid].offset) {
-// 			end = mid - 1;
-// 		} else if (mid == array->count - 1 || offset > array->linemarks[mid + 1].offset) {
-// 			return array->linemarks[mid].linemark;
-// 		} else {
-// 			start = mid + 1;
-// 		}
-// 	}
-// }
-
 int get_line(LineRecordArray *array, int offset)
 {
 	int offsetLeft = offset;

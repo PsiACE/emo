@@ -120,15 +120,15 @@ bool table_delete(Table *table, Value key)
 	return true;
 }
 
-void table_add_all(Table *from, Table *to)
-{
-	for (int i = 0; i <= from->capacity; ++i) {
-		Entry *entry = &from->entries[i];
-		if (!IS_META(entry->key)) {
-			table_set(to, entry->key, entry->value);
-		}
-	}
-}
+// void table_add_all(Table *from, Table *to)
+// {
+// 	for (int i = 0; i <= from->capacity; ++i) {
+// 		Entry *entry = &from->entries[i];
+// 		if (!IS_META(entry->key)) {
+// 			table_set(to, entry->key, entry->value);
+// 		}
+// 	}
+// }
 
 ObjString *table_find_string(Table *table, const char *chars, int length, uint32_t hash)
 {

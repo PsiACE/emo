@@ -94,8 +94,6 @@ static void free_object(Obj *object)
 		break;
 	case OBJ_STRING: {
 		ObjString *string = (ObjString *)object;
-		// FREE_ARRAY(char, string->chars, string->length + 1);
-		// FREE(ObjString, object);
 		reallocate(object, sizeof(ObjString) + string->length + 1, 0);
 		break;
 	}
@@ -203,7 +201,7 @@ void collect_garbage()
 
 #ifdef DEBUG_LOG_GC
 	printf("-- gc end\n");
-	printf("   collected %ld bytes (from %ld to %ld) next at %ld\n", before - vm.bytesAllocated, before,
+	printf("   collected %zu bytes (from %zu to %zu) next at %zu\n", before - vm.bytesAllocated, before,
 		   vm.bytesAllocated, vm.nextGC);
 #endif
 }

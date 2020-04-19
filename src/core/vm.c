@@ -120,8 +120,6 @@ Value pop()
 static Value peek(int distance)
 {
 	return vm.stackTop[-1 - distance];
-	// int look = vm.stackCount;
-	// return vm.stack[look - 1 - distance];
 }
 
 static bool call(ObjClosure *closure, int argCount)
@@ -139,8 +137,6 @@ static bool call(ObjClosure *closure, int argCount)
 	frame->closure = closure;
 	frame->ip = closure->function->chunk.code;
 
-	// int slots = vm.stackCount - argCount - 1;
-	// frame->slots = &vm.stack[slots];
 	frame->slots = vm.stackTop - argCount - 1;
 	return true;
 }
@@ -251,7 +247,6 @@ static InterpretResult run()
 #ifdef DEBUG_TRACE_EXECUTION
 		printf("          ");
 		for (Value *slot = vm.stack; slot < vm.stackTop; ++slot) {
-			// for (Value *slot = vm.stack; slot < &vm.stack[vm.stackCount]; slot++) {
 			printf("[ ");
 			print_value(*slot);
 			printf(" ]");
@@ -431,7 +426,6 @@ static InterpretResult run()
 				return INTERPRET_OK;
 			}
 
-			// vm.stack[vm.stackCount] = *frame->slots;
 			vm.stackTop = frame->slots;
 
 			push(result);

@@ -20,7 +20,7 @@ void free_table(Table *table);
 bool table_get(Table *table, Value key, Value *value);
 bool table_set(Table *table, Value key, Value value);
 bool table_delete(Table *table, Value key);
-void table_add_all(Table *from, Table *to);
+// void table_add_all(Table *from, Table *to);
 ObjString *table_find_string(Table *table, const char *chars, int length, uint32_t hash);
 void mark_table(Table *table);
 void table_remove_white(Table *table);

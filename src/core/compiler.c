@@ -234,14 +234,14 @@ static void init_compiler(Compiler *compiler, FunctionType type)
 static ObjFunction *end_compiler()
 {
 	emit_return();
-	ObjFunction *function = current->function;
+	ObjFunction *current_function = current->function;
 #ifdef DEBUG_PRINT_CODE
 	if (!parser.hadError) {
-		disassemble_chunk(current_chunk(), function->name != NULL ? function->name->chars : "<script>");
+		disassemble_chunk(current_chunk(), current_function->name != NULL ? current_function->name->chars : "<script>");
 	}
 #endif
 	current = current->enclosing;
-	return function;
+	return current_function;
 }
 
 static void begin_scope()
@@ -932,8 +932,8 @@ ObjFunction *compile(const char *source)
 		declaration();
 	}
 
-	ObjFunction *function = end_compiler();
-	return parser.hadError ? NULL : function;
+	ObjFunction *current_function = end_compiler();
+	return parser.hadError ? NULL : current_function;
 }
 
 void mark_compiler_roots()

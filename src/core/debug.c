@@ -26,7 +26,7 @@ static int constant_instruction(const char *name, Chunk *chunk, int offset)
 static int long_constant_instruction(const char *name, Chunk *chunk, int offset)
 {
 	uint32_t constant = chunk->code[offset + 1] | (chunk->code[offset + 2] << 8) | (chunk->code[offset + 3] << 16);
-	printf("%-16s %4d '", name, constant);
+	printf("%-16s %4u '", name, constant);
 	print_value(chunk->constants.values[constant]);
 	printf("'\n");
 	return offset + 4;
