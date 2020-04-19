@@ -215,13 +215,7 @@ static void concatenate()
 	memcpy(string->chars, a->chars, a->length);
 	memcpy(string->chars + a->length, b->chars, b->length);
 	string->chars[length] = '\0';
-	ObjString *result = take_string(string);
-	// char *chars = ALLOCATE(char, length + 1);
-	// memcpy(chars, a->chars, a->length);
-	// memcpy(chars + a->length, b->chars, b->length);
-	// chars[length] = '\0';
-
-	// ObjString *result = take_string(chars, length);
+	ObjString *result = hash_string(string);
 	push(OBJ_VAL(result));
 }
 
