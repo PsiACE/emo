@@ -152,3 +152,22 @@ ObjString *table_find_string(Table *table, const char *chars, int length, uint32
 		index = (index + 1) & table->capacity;
 	}
 }
+
+void mark_table(Table *table)
+{
+	for (int i = 0; i < table->capacity; i++) {
+		Entry *entry = &table->entries[i];
+		mark_object(AS_OBJ(entry->key));
+		mark_value(entry->value);
+	}
+}
+
+void table_remove_white(Table *table)
+{
+	for (int i = 0; i < table->capacity; i++) {
+		Entry *entry = &table->entries[i];
+		if (IS_STRING(entry->key) && !AS_OBJ(entry->key)->isMarked) {
+			table_delete(table, entry->key);
+		}
+	}
+}

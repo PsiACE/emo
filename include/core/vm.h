@@ -22,13 +22,18 @@ typedef struct {
 	int frameCount;
 	Chunk *chunk;
 	uint8_t *ip;
-    Value* stack;
-    Value* stackTop;
-    int stackCapacity;
+	Value *stack;
+	Value *stackTop;
+	int stackCapacity;
 	Table globals;
 	Table strings;
 	ObjUpvalue *openUpvalues;
 	Obj *objects;
+	size_t bytesAllocated;
+	size_t nextGC;
+	int grayCount;
+	int grayCapacity;
+	Obj **grayStack;
 } VM;
 
 extern VM vm;

@@ -3,6 +3,7 @@
 
 #include "core/chunk.h"
 #include "core/memory.h"
+#include "core/vm.h"
 
 void init_line_record_array(LineRecordArray *array)
 {
@@ -83,7 +84,9 @@ void write_chunk(Chunk *chunk, uint8_t byte, int line)
 
 int add_constant(Chunk *chunk, Value value)
 {
+	push(value);
 	write_value_array(&chunk->constants, value);
+	pop();
 	return chunk->constants.count - 1;
 }
 

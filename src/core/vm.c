@@ -77,6 +77,11 @@ void init_vm()
 	vm.stackTop = vm.stack;
 	reset_stack();
 	vm.objects = NULL;
+	vm.bytesAllocated = 0;
+	vm.nextGC = 1024 * 1024;
+	vm.grayCount = 0;
+	vm.grayCapacity = 0;
+	vm.grayStack = NULL;
 	init_table(&vm.globals);
 	init_table(&vm.strings);
 	define_native("clock", clock_native);
@@ -207,8 +212,8 @@ static bool is_falsey(Value value)
 
 static void concatenate()
 {
-	ObjString *b = AS_STRING(pop());
-	ObjString *a = AS_STRING(pop());
+	ObjString *b = AS_STRING(peek(0));
+	ObjString *a = AS_STRING(peek(1));
 
 	int length = a->length + b->length;
 	ObjString *string = make_string(length);
@@ -216,6 +221,8 @@ static void concatenate()
 	memcpy(string->chars + a->length, b->chars, b->length);
 	string->chars[length] = '\0';
 	ObjString *result = hash_string(string);
+	pop();
+	pop();
 	push(OBJ_VAL(result));
 }
 
