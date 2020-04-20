@@ -6,8 +6,7 @@
 typedef struct sObj Obj;
 typedef struct sObjString ObjString;
 
-// TODO:
-// I don't want a `nil` value. But may need a type for nothing.
+// TODO: I don't want a `nil` value. But may need a type for nothing.
 // So, internal use only a meta type.
 typedef enum {
 	VAL_BOOL,	// default `false`

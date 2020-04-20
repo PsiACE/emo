@@ -55,9 +55,8 @@ ObjFunction *new_function()
 	return function;
 }
 
-// TODO:
+// TODO: Maybe we can try `halfsiphash-1-3` or `ahash`
 // Now, we use the FNV 1a hash algorithm.
-// Maybe we can try `halfsiphash-1-3` or `ahash`
 static uint32_t hash_chars(const char *key, int length)
 {
 	register uint32_t hash = 2166136261u;
