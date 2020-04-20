@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -350,6 +351,18 @@ static InterpretResult run()
 		case OP_DIVIDE:
 			BINARY_OP(NUMBER_VAL, /);
 			break;
+		case OP_MODULO: {
+			if (IS_NUMBER(peek(0)) && AS_NUMBER(peek(0)) >= 1 && IS_NUMBER(peek(1))) {
+				int b = AS_NUMBER(pop());
+				int a = AS_NUMBER(pop());
+				push(NUMBER_VAL(a % b));
+			} else {
+				runtime_error("Operands must be two numbers，"
+							  "and the dividend must be greater than 0 after conversion to an integer.");
+				return INTERPRET_RUNTIME_ERROR;
+			}
+			break;
+		}
 		case OP_NOT:
 			push(BOOL_VAL(is_falsey(pop())));
 			break;

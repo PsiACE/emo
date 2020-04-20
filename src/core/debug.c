@@ -103,6 +103,8 @@ int disassemble_instruction(Chunk *chunk, int offset)
 		return simple_instruction("OP_MULTIPLY", offset);
 	case OP_DIVIDE:
 		return simple_instruction("OP_DIVIDE", offset);
+	case OP_MODULO:
+		return simple_instruction("OP_MODULO", offset);
 	case OP_NOT:
 		return simple_instruction("OP_NOT", offset);
 	case OP_NEGATE:

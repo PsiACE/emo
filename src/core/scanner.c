@@ -237,6 +237,8 @@ Token scan_token()
 		return make_token(TOKEN_SLASH);
 	case '*':
 		return make_token(TOKEN_STAR);
+	case '%':
+		return make_token(TOKEN_PERCENT);
 	case '!':
 		if (match('=')) {
 			return make_token(TOKEN_BANG_EQUAL);
