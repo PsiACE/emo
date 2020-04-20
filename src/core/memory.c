@@ -173,6 +173,11 @@ static void sweep()
 		} else {
 			Obj *unreached = object;
 
+			// FIXME？Skip native to avoid failure caused by debug mode.
+			// But No special treatment is required under normal circumstances.
+			if (unreached->type == OBJ_NATIVE)
+				break;
+
 			object = object->next;
 			if (previous != NULL) {
 				previous->next = object;

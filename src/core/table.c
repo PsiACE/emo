@@ -157,16 +157,21 @@ void mark_table(Table *table)
 {
 	for (int i = 0; i < table->capacity; i++) {
 		Entry *entry = &table->entries[i];
-		mark_object(AS_OBJ(entry->key));
+		if (!entry || (IS_META(entry->key)))
+			continue;
+		mark_value(entry->key);
 		mark_value(entry->value);
 	}
 }
 
+// TODO: Although it looks error-free, it needs to be verified.
 void table_remove_white(Table *table)
 {
 	for (int i = 0; i < table->capacity; i++) {
 		Entry *entry = &table->entries[i];
-		if (IS_STRING(entry->key) && !AS_OBJ(entry->key)->isMarked) {
+		if (IS_META(entry->key))
+			continue;
+		if (IS_OBJ(entry->key) && !AS_OBJ(entry->key)->isMarked) {
 			table_delete(table, entry->key);
 		}
 	}
