@@ -8,6 +8,7 @@ core_sources = [
     'core/chunk.c',
     'core/compiler.c',
     'core/debug.c',
+    'core/math.c',
     'core/memory.c',
     'core/object.c',
     'core/scanner.c',
