@@ -64,7 +64,7 @@ void print_value(Value value)
 		printf(AS_BOOL(value) ? "true" : "false");
 		break;
 	case VAL_NUMBER:
-		printf("%g", AS_NUMBER(value));
+		printf("%.15g", AS_NUMBER(value));
 		break;
 	case VAL_META:
 		printf("<meta>");
