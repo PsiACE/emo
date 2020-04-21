@@ -356,11 +356,22 @@ static InterpretResult run()
 				double b = AS_NUMBER(pop());
 				double a = AS_NUMBER(pop());
 				if (a > 0 && b < 0)
-					push(NUMBER_VAL(-fmod(a, b)));
+					push(NUMBER_VAL(-mod(a, b)));
 				else
-					push(NUMBER_VAL(fmod(a, b)));
+					push(NUMBER_VAL(mod(a, b)));
 			} else {
 				runtime_error("Operands must be two numbers, and the divisor must not be 0.");
+				return INTERPRET_RUNTIME_ERROR;
+			}
+			break;
+		}
+		case OP_POW: {
+			if (IS_NUMBER(peek(0)) && IS_NUMBER(peek(1))) {
+				double b = AS_NUMBER(pop());
+				double a = AS_NUMBER(pop());
+				push(NUMBER_VAL(pow(a, b)));
+			} else {
+				runtime_error("Operands must be two numbers.");
 				return INTERPRET_RUNTIME_ERROR;
 			}
 			break;

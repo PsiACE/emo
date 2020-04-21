@@ -17,6 +17,7 @@ typedef enum {
 	TOKEN_PERCENT,
 
 	// One or two character tokens.
+	TOKEN_STAR_STAR,
 	TOKEN_BANG_EQUAL,
 	TOKEN_EQUAL,
 	TOKEN_EQUAL_EQUAL,

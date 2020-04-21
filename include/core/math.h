@@ -9,11 +9,19 @@ static union {
 } endian_test = {{'l', '?', '?', 'b'}};
 #define _LE_ (*(char *)&endian_test.mylong == l)
 
-#define FLOAT32_FRACTION_SIZE 23
-#define FLOAT64_FRACTION_SIZE 52
-
-#define FLOAT32_BIAS 0x7f
-#define FLOAT64_BIAS 0x3ff
+#define M_E 2.7182818284590452354
+#define M_LOG2E 1.4426950408889634074
+#define M_LOG10E 0.43429448190325182765
+#define M_LN2 0.69314718055994530942
+#define M_LN10 2.30258509299404568402
+#define M_PI 3.14159265358979323846
+#define M_PI_2 1.57079632679489661923
+#define M_PI_4 0.78539816339744830962
+#define M_1_PI 0.31830988618379067154
+#define M_2_PI 0.63661977236758134308
+#define M_2_SQRTPI 1.12837916709551257390
+#define M_SQRT2 1.41421356237309504880
+#define M_SQRT1_2 0.70710678118654752440
 
 #if __LE__
 
@@ -62,32 +70,39 @@ typedef union {
 #endif
 
 #if __SIZEOF_DOUBLE__ == 4
-#define float32_t double
-#elif __SIZEOF_DOUBLE__ == 8
-#define float64_t double
-#endif
 
-#ifdef float32_t
+#define float_t double
+#define FLOAT_FRACTION_SIZE 23
+#define FLOAT_BIAS 0x7f
+#define TRUNC_MASK UINT32_C(0x007fffff)
+#define TAYLOR_DEGREE_EXP 13
+#define TAYLOR_DEGREE_LOG 31
 
 typedef union {
-	float32_t val;
+	float_t val;
 	float32 data;
-} float32_u;
+} float_u;
 
-float32_t trunc(float32_t val);
-float32_t fmod(float32_t dividend, float32_t divisor);
+#elif __SIZEOF_DOUBLE__ == 8
 
-#endif
-
-#ifdef float64_t
+#define float_t double
+#define FLOAT_FRACTION_SIZE 52
+#define FLOAT_BIAS 0x3ff
+#define TRUNC_MASK UINT64_C(0x000fffffffffffff)
+#define TAYLOR_DEGREE_EXP 21
+#define TAYLOR_DEGREE_LOG 63
 
 typedef union {
-	float64_t val;
+	float_t val;
 	float64 data;
-} float64_u;
-
-float64_t trunc(float64_t val);
-float64_t fmod(float64_t dividend, float64_t divisor);
+} float_u;
 
 #endif
+
+float_t trunc(float_t val);
+float_t mod(float_t dividend, float_t divisor);
+float_t exp(float_t index);
+float_t log(float_t arg);
+float_t pow(float_t base, float_t exponent);
+
 #endif
