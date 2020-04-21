@@ -56,10 +56,6 @@ static void runtime_error(const char *format, ...)
 	}
 
 	reset_stack();
-
-	// FIXME? I don't know if it's right.
-	// If you remove it, you will run `fn-error` in a dead cycle.
-	exit(INTERPRET_RUNTIME_ERROR);
 }
 
 static void define_native(const char *name, NativeFn function)
@@ -127,6 +123,7 @@ static bool call(ObjClosure *closure, int argCount)
 {
 	if (argCount != closure->function->arity) {
 		runtime_error("Expected %d arguments but got %d.", closure->function->arity, argCount);
+		return false;
 	}
 
 	if (vm.frameCount == FRAMES_MAX) {
