@@ -352,13 +352,15 @@ static InterpretResult run()
 			BINARY_OP(NUMBER_VAL, /);
 			break;
 		case OP_MODULO: {
-			if (IS_NUMBER(peek(0)) && AS_NUMBER(peek(0)) >= 1 && IS_NUMBER(peek(1))) {
-				int b = AS_NUMBER(pop());
-				int a = AS_NUMBER(pop());
-				push(NUMBER_VAL(a % b));
+			if (IS_NUMBER(peek(0)) && AS_NUMBER(peek(0)) != 0 && IS_NUMBER(peek(1))) {
+				double b = AS_NUMBER(pop());
+				double a = AS_NUMBER(pop());
+				if (a > 0 && b < 0)
+					push(NUMBER_VAL(-fmod(a, b)));
+				else
+					push(NUMBER_VAL(fmod(a, b)));
 			} else {
-				runtime_error("Operands must be two numbers，"
-							  "and the dividend must be greater than 0 after conversion to an integer.");
+				runtime_error("Operands must be two numbers, and the divisor must not be 0.");
 				return INTERPRET_RUNTIME_ERROR;
 			}
 			break;
