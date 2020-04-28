@@ -1,4 +1,3 @@
-#include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +6,7 @@
 
 #include "core/common.h"
 #include "core/compiler.h"
+#include "core/math.h"
 #include "core/memory.h"
 #include "core/object.h"
 #include "core/value.h"
