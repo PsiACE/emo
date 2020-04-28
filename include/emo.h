@@ -16,4 +16,12 @@
 #define DEBUG_LOG_GC
 #endif
 
+#ifndef USR_EMOHISTORY_FILE
+#ifdef _WIN32
+#define USR_EMOHISTORY_FILE "\\_emo_history"
+#else
+#define USR_EMOHISTORY_FILE "/.emo_history"
+#endif
+#endif
+
 #endif

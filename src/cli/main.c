@@ -10,32 +10,39 @@
 #include "core/common.h"
 #include "core/vm.h"
 
-static char buffer[2048];
+#include "external/crossline.h"
 
-static char *read_line(char *prompt)
+static char *env_home()
 {
-	fputs(prompt, stdout);
-	fgets(buffer, 2048, stdin);
-	char *cpy = malloc(strlen(buffer) + 1);
-	strcpy(cpy, buffer);
-	cpy[strlen(cpy) - 1] = '\0';
-	return cpy;
+	static char *t = 0;
+	if (t)
+		return t;
+	t = t ? t : getenv("USERPROFILE");
+	t = t ? t : getenv("HOME");
+	t = t ? t : "./";
+	return t;
 }
 
 static void run_repl()
 {
 	repl_helper();
-	char *line = NULL;
-	for (line = read_line("emo > "); line != NULL && strcmp(line, "exit()") != 0; line = read_line("emo > ")) {
-		// printf("> ");
+	char buf[2048];
+	char *homename = env_home();
+	char *filename = USR_EMOHISTORY_FILE;
+	char *history = strcat(homename, filename);
+	crossline_history_load(history);
 
-		// if (!fgets(line, sizeof(line), stdin)) {
-		// 	printf("\n");
-		// 	break;
-		// }
-		interpret(line);
-		free(line);
+	while (NULL != crossline_readline("emo> ", buf, sizeof(buf))) {
+		if (!strcmp(buf, "history()")) {
+			crossline_history_show();
+		} else if (!strcmp(buf, "exit()")) {
+			break;
+		} else {
+			interpret(buf);
+		}
 	}
+
+	crossline_history_save(history);
 }
 
 static char *read_file(const char *path)
