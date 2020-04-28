@@ -17,7 +17,11 @@ core_sources = [
     'core/vm.c',
 ]
 
-emo_sources = files(cli_sources, core_sources)
+external_sources = [
+    'external/crossline.c',
+]
+
+emo_sources = files(cli_sources, core_sources, external_sources)
 
 emo_deps = []
 

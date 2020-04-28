@@ -20,10 +20,14 @@ core_headers = [
     'core/vm.h',
 ]
 
+external_headers = [
+    'external/crossline.h',
+]
+
 include_headers = [
     'emo.h'
 ]
 
-emo_headers = files(cli_headers, core_headers, core_headers)
+emo_headers = files(cli_headers, core_headers, external_headers, include_headers)
 
 install_headers(include_headers, subdir: 'emo')
